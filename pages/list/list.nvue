@@ -1,0 +1,233 @@
+<template>
+	<div>
+		<uni-tabs @change="changeTab" :index="tabIndex">
+			<uni-tab-bar>
+				<div class="tab-bar-item" v-for="(tabBar, index) in tabBars" :key="index" :ref="tabBar.id + index">
+					<text class="tab-bar-title" :class="[tabIndex === index ? 'active' : '']">{{tabBar.name}}</text>
+				</div>
+			</uni-tab-bar>
+			<uni-tab-content>
+				<list class="list" v-for="(tabItem, tabIndex) in newsList" :key="tabIndex" @loadmore="loadMore(tabIndex)"
+				 loadmoreoffset="10">
+					<refresh class="refresh" @refresh="onRefresh" @pullingdown="onPullingDown" :display="refreshing ? 'show' : 'hide'">
+						<text class="refresh-text">{{refreshText}}</text>
+					</refresh>
+					<cell v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
+						<uni-media-list :data="newsItem" @close="dislike(tabIndex, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
+					</cell>
+					<cell class="loadmore">
+						<text class="loadmore-text">{{tabItem.loadingText}}</text>
+					</cell>
+				</list>
+			</uni-tab-content>
+		</uni-tabs>
+	</div>
+</template>
+
+<script>
+	import uniTabContent from '@/components/uni-tab-content/uni-tab-content.nvue';
+	import uniTabBar from '@/components/uni-tab-bar/uni-tab-bar.nvue';
+	import uniTabs from '@/components/uni-tabs/uni-tabs.nvue';
+	import uniMediaList from '@/components/uni-media-list/uni-media-list.nvue';
+
+	import {
+		friendlyDate
+	} from '@/common/util.js';
+
+	const dom = weex.requireModule('dom');
+
+	export default {
+		data() {
+			return {
+				refreshing: false,
+				refreshText: '下拉可以刷新',
+				newsList: [],
+				tabIndex: 0,
+				tabBars: [{
+					name: '最新',
+					id: 0
+				}, {
+					name: '大公司',
+					id: 23
+				}, {
+					name: '内容',
+					id: 223
+				}, {
+					name: '消费',
+					id: 221
+				}, {
+					name: '娱乐',
+					id: 225
+				}, {
+					name: '区块链',
+					id: 208
+				}, ]
+			}
+		},
+		components: {
+			uniTabContent,
+			uniTabBar,
+			uniTabs,
+			uniMediaList
+		},
+		created() {
+			// 初始化列表信息
+			this.tabBars.forEach((tabBar) => {
+				this.newsList.push({
+					data: [],
+					requestParams: {
+						columnId: tabBar.id,
+						minId: 0,
+						pageSize: 10,
+						column: 'id,post_id,title,author_name,cover,published_at,comments_count'
+					},
+					loadingText: '加载中...'
+				});
+			});
+			this.getList();
+		},
+		methods: {
+			getList(action = 1) {
+				let activeTab = this.newsList[this.tabIndex];
+				activeTab.requestParams.time = new Date().getTime() + '';
+				if (action === 1) {
+					activeTab.requestParams.minId = 0;
+				}
+				uni.request({
+					url: 'https://unidemo.dcloud.net.cn/api/news',
+					data: activeTab.requestParams,
+					success: (result) => {
+						if (result.statusCode == 200) {
+							const data = result.data.map((news) => {
+								return {
+									id: news.id,
+									article_type: 1,
+									datetime: friendlyDate(new Date(news.published_at.replace(/\-/g, '/')).getTime()),
+									title: news.title,
+									image_url: news.cover,
+									source: news.author_name,
+									comment_count: news.comments_count,
+									post_id: news.post_id
+								};
+							});
+							if (action === 1) {
+								activeTab.data = data;
+								this.refreshing = false;
+							} else {
+								data.forEach((news) => {
+									activeTab.data.push(news);
+								});
+							}
+							activeTab.requestParams.minId = data[data.length - 1].id;
+						}
+					}
+				});
+			},
+			goDetail(detail) {
+				uni.navigateTo({
+					url: '/pages/detail/detail?query=' + encodeURIComponent(JSON.stringify(detail))
+				});
+			},
+			dislike(tabIndex, newsIndex) {
+				uni.showModal({
+					content: '不感兴趣？',
+					success: (res) => {
+						if (res.confirm) {
+							this.newsList[tabIndex].data.splice(newsIndex, 1);
+						}
+					}
+				})
+			},
+			loadMore() {
+				this.getList(2);
+			},
+			async changeTab(event) {
+				this.tabIndex = event.index;
+				const activeNode = this.$refs[this.tabBars[event.index].id + event.index][0];
+				let nodeSize = await this.getNodeSize(activeNode);
+				if (nodeSize.left + nodeSize.width > 750) {
+					let index = event.index - 4;
+					let targetNode = this.$refs[this.tabBars[index].id + index][0];
+					dom.scrollToElement(targetNode, {});
+				} else if (nodeSize.left < 0) {
+					dom.scrollToElement(activeNode, {});
+				}
+				// 首次切换后加载数据
+				const activeTab = this.newsList[this.tabIndex];
+				if (activeTab.data.length === 0) {
+					this.getList();
+				}
+			},
+			getNodeSize(node) {
+				return new Promise((resolve, reject) => {
+					dom.getComponentRect(node, (result) => {
+						resolve(result.size);
+					});
+				});
+			},
+			onRefresh(event) {
+				this.refreshText = '正在刷新...';
+				this.refreshing = true;
+				this.getList();
+			},
+			onPullingDown(event) {
+				if (this.refreshing) {
+					return;
+				}
+				if (Math.abs(event.pullingDistance) > Math.abs(event.viewHeight)) {
+					this.refreshText = "释放立即刷新";
+				} else {
+					this.refreshText = "下拉可以刷新";
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+	.tab-bar-item {
+		width: 150px;
+		height: 100px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tab-bar-title {
+		height: 100px;
+		line-height: 100px;
+		font-size: 30px;
+		color: #555;
+	}
+
+	.active {
+		color: #007AFF;
+	}
+
+	.loadmore {
+		height: 70px;
+		width: 750px;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.loadmore-text {
+		font-size: 30px;
+		text-align: center;
+		color: #999999;
+	}
+
+	.refresh {
+		width: 750px;
+		height: 70px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.refresh-text {
+		text-align: center;
+		font-size: 28px;
+		color: #999999;
+	}
+</style>
