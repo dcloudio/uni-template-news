@@ -6,7 +6,7 @@
 		</scroll-view>
 		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
 			<swiper-item v-for="(tabItem, tabIndex) in newsList" :key="tabIndex">
-				<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">
+				<scroll-view class="list" scroll-y @scrolltolower="loadMore(tabIndex)">
 					<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
 						<uni-media-list :data="newsItem" @close="dislike(tabIndex, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
 					</block>
@@ -167,7 +167,7 @@
 				}
 				this.isClickChange = false;
 				this.tabIndex = index;
-				
+
 				// 首次切换后加载数据
 				const activeTab = this.newsList[this.tabIndex];
 				if (activeTab.data.length === 0) {
@@ -200,11 +200,16 @@
 				if (this.tabIndex === index) {
 					return false;
 				} else {
-					let tabBar = await this.getElSize("tab-bar"),
+					let tabBar = await this.getElSize('tab-bar'),
 						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
 					this.scrollLeft = tabBarScrollLeft;
 					this.isClickChange = true;
 					this.tabIndex = index;
+					// 首次切换后加载数据
+					const activeTab = this.newsList[this.tabIndex];
+					if (activeTab.data.length === 0) {
+						this.getList();
+					}
 				}
 			},
 		}
