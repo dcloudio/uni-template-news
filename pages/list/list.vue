@@ -4,18 +4,29 @@
 			<view v-for="(tab, index) in tabBars" :key="tab.ref" :class="['swiper-tab-list',tabIndex==index ? 'active' : '']"
 			 :id="tab.ref" :data-current="index" @click="tapTab(index)">{{tab.name}}</view>
 		</scroll-view>
-		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
-			<swiper-item v-for="(tabItem, tabIndex) in newsList" :key="tabIndex">
-				<scroll-view class="list" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
-						<uni-media-list :data="newsItem" @close="dislike(tabIndex, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
-					</block>
-					<view class="uni-tab-bar-loading">
-						<uni-load-more :loadingType="tabItem.loadingText" :contentText="loadingText"></uni-load-more>
-					</view>
-				</scroll-view>
-			</swiper-item>
-		</swiper>
+		<!-- #ifndef MP-BAIDU -->
+		<scroll-view class="list" v-for="(tabItem, idx) in newsList" :key="idx" v-if="tabIndex === idx" scroll-y
+		 @scrolltolower="loadMore(idx)">
+			<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
+				<uni-media-list :data="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
+			</block>
+			<view class="uni-tab-bar-loading">
+				<view class="loading-more">{{loadingText}}</view>
+			</view>
+		</scroll-view>
+		<!-- #endif -->
+		<!-- #ifdef MP-BAIDU -->
+		<view class="scroll-wrap" v-for="(tabItem, idx) in newsList" :key="idx">
+			<scroll-view class="list" v-if="tabIndex === idx" scroll-y @scrolltolower="loadMore(idx)" :style="scrollViewHeight">
+				<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
+					<uni-media-list :data="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
+				</block>
+				<view class="uni-tab-bar-loading">
+					<view class="loading-more">{{loadingText}}</view>
+				</view>
+			</scroll-view>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 <script>
@@ -70,6 +81,11 @@
 				}, ]
 			}
 		},
+		computed: {
+			scrollViewHeight() {
+				return 'height:' + (uni.getSystemInfoSync().windowHeight) + 'px';
+			}
+		},
 		onLoad: function() {
 			// 初始化列表信息
 			this.tabBars.forEach((tabBar) => {
@@ -93,6 +109,7 @@
 				if (action === 1) {
 					activeTab.requestParams.minId = 0;
 				}
+				this.loadingText = '加载中...';
 				uni.request({
 					url: 'https://unidemo.dcloud.net.cn/api/news',
 					data: activeTab.requestParams,
@@ -139,6 +156,7 @@
 				})
 			},
 			loadMore() {
+				console.log('load more');
 				this.getList(2);
 			},
 			async changeTab(event) {
@@ -200,10 +218,11 @@
 				if (this.tabIndex === index) {
 					return false;
 				} else {
-					let tabBar = await this.getElSize('tab-bar'),
-						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-					this.scrollLeft = tabBarScrollLeft;
-					this.isClickChange = true;
+					// 					let tabBar = await this.getElSize('tab-bar'),
+					// 						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+					// 					this.scrollLeft = tabBarScrollLeft;
+					// 					this.isClickChange = true;
+					console.log('ssss')
 					this.tabIndex = index;
 					// 首次切换后加载数据
 					const activeTab = this.newsList[this.tabIndex];
@@ -233,7 +252,8 @@
 
 	.uni-tab-bar .list {
 		width: 750upx;
-		height: 100%;
+		height: calc(100% - 100upx);
+		margin-top: 100upx;
 	}
 
 	.uni-swiper-tab {
@@ -242,6 +262,11 @@
 		line-height: 100upx;
 		height: 100upx;
 		border-bottom: 1px solid #c8c7cc;
+		position: fixed;
+		background: #FFFFFF;
+		z-index: 999;
+		top: var(--window-top);
+		left: 0;
 	}
 
 	.swiper-tab-list {
@@ -260,9 +285,13 @@
 		flex: 1;
 		width: 100%;
 		height: calc(100% - 100upx);
+		overflow: scroll;
 	}
 
 	.uni-tab-bar-loading {
+		text-align: center;
 		padding: 20upx 0;
+		font-size: 14px;
+		color: #CCCCCC;
 	}
 </style>

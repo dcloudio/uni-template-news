@@ -12,6 +12,7 @@
 		<view class="article-content">
 			<rich-text :nodes="content"></rich-text>
 		</view>
+		<view class="comment-wrap"></view>
 	</view>
 </template>
 
