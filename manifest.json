@@ -53,5 +53,11 @@
         "setting" : {
             "urlCheck" : false
         }
+    },
+    "h5" : {
+        "router" : {
+            "base" : "/demo/news/website/"
+        },
+        "template" : "h5.template.html"
     }
 }
