@@ -8,7 +8,7 @@
 		<scroll-view class="list" v-for="(tabItem, idx) in newsList" :key="idx" v-if="tabIndex === idx" scroll-y
 		 @scrolltolower="loadMore(idx)">
 			<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
-				<uni-media-list :data="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
+				<uni-media-list :options="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
 			</block>
 			<view class="uni-tab-bar-loading">
 				<view class="loading-more">{{loadingText}}</view>
@@ -19,7 +19,7 @@
 		<view class="scroll-wrap" v-for="(tabItem, idx) in newsList" :key="idx">
 			<scroll-view class="list" v-if="tabIndex === idx" scroll-y @scrolltolower="loadMore(idx)" :style="scrollViewHeight">
 				<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
-					<uni-media-list :data="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
+					<uni-media-list :options="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
 				</block>
 				<view class="uni-tab-bar-loading">
 					<view class="loading-more">{{loadingText}}</view>
@@ -156,7 +156,6 @@
 				})
 			},
 			loadMore() {
-				console.log('load more');
 				this.getList(2);
 			},
 			async changeTab(event) {
@@ -218,11 +217,6 @@
 				if (this.tabIndex === index) {
 					return false;
 				} else {
-					// 					let tabBar = await this.getElSize('tab-bar'),
-					// 						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-					// 					this.scrollLeft = tabBarScrollLeft;
-					// 					this.isClickChange = true;
-					console.log('ssss')
 					this.tabIndex = index;
 					// 首次切换后加载数据
 					const activeTab = this.newsList[this.tabIndex];
@@ -230,7 +224,7 @@
 						this.getList();
 					}
 				}
-			},
+			}
 		}
 	}
 </script>
