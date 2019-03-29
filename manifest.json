@@ -52,7 +52,8 @@
         "appid" : "",
         "setting" : {
             "urlCheck" : false
-        }
+        },
+        "usingComponents": true
     },
     "h5" : {
         "router" : {
