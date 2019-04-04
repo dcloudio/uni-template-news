@@ -6,6 +6,7 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
+        "usingComponents": true,
         /* 5+App特有相关 */
         "modules" : {},
         /* 模块配置 */
