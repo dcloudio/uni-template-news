@@ -8,7 +8,7 @@
 						<image class="image-list1" :class="{'image-list2': options.article_type === 1 || options.article_type === 2}"
 						 v-if="options.image_url" :src="options.image_url"></image>
 						<image class="image-list3" v-if="options.image_list" :src="source.url" v-for="(source, i) in options.image_list"
-						 :key="i" />
+						 :key="source.url" />
 					</view>
 				</view>
 				<view class="media-foot">

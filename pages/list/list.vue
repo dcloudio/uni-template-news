@@ -5,9 +5,9 @@
 			 :id="tab.ref" :data-current="index" @click="tapTab(index)">{{tab.name}}</view>
 		</scroll-view>
 		<!-- #ifndef MP-BAIDU -->
-		<scroll-view class="list" v-for="(tabItem, idx) in newsList" :key="idx" v-if="tabIndex === idx" scroll-y
+		<scroll-view class="list" v-for="(tabItem, idx) in newsList" :key="tabItem.id" v-if="tabIndex === idx" scroll-y
 		 @scrolltolower="loadMore(idx)">
-			<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
+			<block v-for="(newsItem, newsIndex) in tabItem.data" :key="newsItem.id">
 				<uni-media-list :options="newsItem" @close="dislike(idx, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
 			</block>
 			<view class="uni-tab-bar-loading">
@@ -88,8 +88,9 @@
 		},
 		onLoad: function() {
 			// 初始化列表信息
-			this.tabBars.forEach((tabBar) => {
+			this.tabBars.forEach((tabBar, index) => {
 				this.newsList.push({
+					id: 'tabBar' + index,
 					data: [],
 					requestParams: {
 						columnId: tabBar.id,

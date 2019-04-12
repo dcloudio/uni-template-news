@@ -8,7 +8,7 @@
                         <image :class="['image-list1',isImgRight||isImgLeft?'image-list2':'']" v-if="data.image_url"
                             :src="data.image_url"></image>
                         <image class="image-list3" v-if="data.image_list" :src="source.url" v-for="(source, i) in data.image_list"
-                            :key="i" />
+                            :key="source.url" />
                     </div>
                 </div>
                 <div class="media-foot">
