@@ -1,82 +1,100 @@
 <template>
-	<div>
-		<uni-tabs @change="changeTab" :index="tabIndex">
-			<uni-tab-bar>
-				<div class="tab-bar-item" v-for="(tabBar, index) in tabBars" :key="index" :ref="tabBar.id + index">
-					<text class="tab-bar-title" :class="[tabIndex === index ? 'active' : '']">{{tabBar.name}}</text>
-				</div>
-			</uni-tab-bar>
-			<uni-tab-content>
-				<list class="list" v-for="(tabItem, tabIndex) in newsList" :key="tabIndex" @loadmore="loadMore(tabIndex)"
-				 loadmoreoffset="10">
-					<refresh class="refresh" @refresh="onRefresh" @pullingdown="onPullingDown" :display="refreshing ? 'show' : 'hide'">
-						<text class="refresh-text">{{refreshText}}</text>
+	<view class="tabs">
+		<scroll-view id="tab-bar" class="scroll-h" :scroll-x="true" :show-scrollbar="false" :scroll-into-view="scrollInto">
+			<view v-for="(tab,index) in tabBars" :key="tab.id" class="uni-tab-item" :id="tab.id" :data-current="index" @click="ontabtap">
+				<text class="uni-tab-item-title" :class="tabIndex==index ? 'uni-tab-item-title-active' : ''">{{tab.name}}</text>
+			</view>
+		</scroll-view>
+		<view class="line-h"></view>
+		<swiper :current="tabIndex" class="swiper-box" style="flex: 1;" :duration="300" @change="ontabchange">
+			<swiper-item class="swiper-item" v-for="(tab,index1) in newsList" :key="index1">
+				<scroll-view class="scroll-v list" scroll-y @scrolltolower="loadMore(index1)">
+					<!-- #ifdef APP-PLUS-NVUE -->
+					<refresh class="refresh" @refresh="onrefresh(index1)" @pullingdown="onpullingdown" :display="tab.refreshing ? 'show' : 'hide'">
+						<div class="refresh-view">
+							<image class="refresh-icon" :src="refreshIcon" :style="{width: (tab.refreshing || pulling) ? 0: '32px'}" :class="{'refresh-icon-active': tab.refreshFlag}"></image>
+							<image class="loading-icon" :src="loadingIcon" v-if="tab.refreshing"></image>
+							<text class="loading-text">{{tab.refreshText}}</text>
+						</div>
 					</refresh>
-					<cell v-for="(newsItem, newsIndex) in tabItem.data" :key="newsIndex">
-						<uni-media-list :data="newsItem" @close="dislike(tabIndex, newsIndex)" @click="goDetail(newsItem)"></uni-media-list>
-					</cell>
-					<cell class="loadmore">
-						<text class="loadmore-text">{{tabItem.loadingText}}</text>
-					</cell>
-				</list>
-			</uni-tab-content>
-		</uni-tabs>
-	</div>
+					<!-- #endif -->
+					<block v-for="(newsitem,index2) in tab.data" :key="newsitem.id">
+						<media-item :options="newsitem" @close="dislike(index1,index2)" @click="goDetail(newsitem)"></media-item>
+					</block>
+					<view class="loading-more">
+						<text class="loading-more-text">{{tab.loadingText}}</text>
+					</view>
+				</scroll-view>
+			</swiper-item>
+		</swiper>
+		<!-- <view class="update-tips" v-if="showTips">
+			<text class="update-tips-text">已为您推荐了 5 条</text>
+		</view> -->
+	</view>
 </template>
-
 <script>
-	import uniTabContent from '@/components/uni-tab-content/uni-tab-content.nvue';
-	import uniTabBar from '@/components/uni-tab-bar/uni-tab-bar.nvue';
-	import uniTabs from '@/components/uni-tabs/uni-tabs.nvue';
-	import uniMediaList from '@/components/uni-media-list/uni-media-list.nvue';
-
 	import {
 		friendlyDate
 	} from '@/common/util.js';
 
-	const dom = weex.requireModule('dom');
+	import mediaItem from './list-item.nvue';
+
+	// 缓存每页最多
+	const MAX_CACHE_DATA = 100;
+	// 缓存页签数量
+	const MAX_CACHE_PAGE = 3;
 
 	export default {
+		components: {
+			mediaItem
+		},
 		data() {
 			return {
-				refreshing: false,
-				refreshText: '下拉可以刷新',
 				newsList: [],
+				cacheTab: [],
 				tabIndex: 0,
 				tabBars: [{
+					id: "tab01",
 					name: '最新',
-					id: 0
+					newsid: 0
 				}, {
+					id: "tab02",
 					name: '大公司',
-					id: 23
+					newsid: 23
 				}, {
+					id: "tab03",
 					name: '内容',
-					id: 223
+					newsid: 223
 				}, {
+					id: "tab04",
 					name: '消费',
-					id: 221
+					newsid: 221
 				}, {
+					id: "tab05",
 					name: '娱乐',
-					id: 225
+					newsid: 225
 				}, {
+					id: "tab06",
 					name: '区块链',
-					id: 208
-				}, ]
+					newsid: 208
+				}, ],
+				scrollInto: "",
+				showTips: false,
+				navigateFlag: false,
+				pulling: false,
+				refreshIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRFcHBw3Nzct7e39vb2ycnJioqK7e3tpqam29vb////D8oK7wAAAAp0Uk5T////////////ALLMLM8AAABxSURBVHja7JVBDoAgDASrjqj//7CJBi90iyYeOHTPMwmFZrHjYyyFYYUy1bwUZqtJIYVxhf1a6u0R7iUvWsCcrEtwJHp8MwMdvh2amHduiZD3rpWId9+BgPd7Cc2LIkPyqvlQvKxKBJ//Qwq/CacAAwDUv0a0YuKhzgAAAABJRU5ErkJggg==",
+				loadingIcon: "data:image/gif;base64,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"
 			}
 		},
-		components: {
-			uniTabContent,
-			uniTabBar,
-			uniTabs,
-			uniMediaList
-		},
-		created() {
-			// 初始化列表信息
+		onLoad() {
 			this.tabBars.forEach((tabBar) => {
 				this.newsList.push({
 					data: [],
+					refreshing: false,
+					refreshFlag: false,
+					refreshText: "",
 					requestParams: {
-						columnId: tabBar.id,
+						columnId: tabBar.newsid,
 						minId: 0,
 						pageSize: 10,
 						column: 'id,post_id,title,author_name,cover,published_at,comments_count'
@@ -84,11 +102,11 @@
 					loadingText: '加载中...'
 				});
 			});
-			this.getList();
+			this.getList(0);
 		},
 		methods: {
-			getList(action = 1) {
-				let activeTab = this.newsList[this.tabIndex];
+			getList(index, action = 1) {
+				let activeTab = this.newsList[index];
 				activeTab.requestParams.time = new Date().getTime() + '';
 				if (action === 1) {
 					activeTab.requestParams.minId = 0;
@@ -97,36 +115,45 @@
 					url: 'https://unidemo.dcloud.net.cn/api/news',
 					data: activeTab.requestParams,
 					success: (result) => {
-						if (result.statusCode == 200) {
-							const data = result.data.map((news) => {
-								return {
-									id: news.id,
-									article_type: 1,
-									datetime: friendlyDate(new Date(news.published_at.replace(/\-/g, '/')).getTime()),
-									title: news.title,
-									image_url: news.cover,
-									source: news.author_name,
-									comment_count: news.comments_count,
-									post_id: news.post_id
-								};
-							});
-							if (action === 1) {
-								activeTab.data = data;
-								this.refreshing = false;
-							} else {
-								data.forEach((news) => {
-									activeTab.data.push(news);
-								});
-							}
-							activeTab.requestParams.minId = data[data.length - 1].id;
+						if (result.statusCode !== 200) {
+							return;
 						}
+						const data = result.data.map((news) => {
+							return {
+								id: this.newGuid() + news.id,
+								newsid: news.id,
+								article_type: 1,
+								datetime: friendlyDate(new Date(news.published_at.replace(/\-/g, '/')).getTime()),
+								title: news.title,
+								image_url: news.cover,
+								source: news.author_name,
+								comment_count: news.comments_count,
+								post_id: news.post_id
+							};
+						});
+						if (action === 1) {
+							activeTab.data = data;
+							this.refreshing = false;
+						} else {
+							data.forEach((news) => {
+								activeTab.data.push(news);
+							});
+						}
+						activeTab.requestParams.minId = data[data.length - 1].newsid;
 					}
 				});
 			},
 			goDetail(detail) {
+				if (this.navigateFlag) {
+					return;
+				}
+				this.navigateFlag = true;
 				uni.navigateTo({
 					url: '/pages/detail/detail?query=' + encodeURIComponent(JSON.stringify(detail))
 				});
+				setTimeout(() => {
+					this.navigateFlag = false;
+				}, 200)
 			},
 			dislike(tabIndex, newsIndex) {
 				uni.showModal({
@@ -138,96 +165,242 @@
 					}
 				})
 			},
-			loadMore() {
-				this.getList(2);
+			loadMore(e) {
+				this.getList(this.tabIndex, 2);
 			},
-			async changeTab(event) {
-				this.tabIndex = event.index;
-				const activeNode = this.$refs[this.tabBars[event.index].id + event.index][0];
-				let nodeSize = await this.getNodeSize(activeNode);
-				if (nodeSize.left + nodeSize.width > 750) {
-					let index = event.index - 4;
-					let targetNode = this.$refs[this.tabBars[index].id + index][0];
-					dom.scrollToElement(targetNode, {});
-				} else if (nodeSize.left < 0) {
-					dom.scrollToElement(activeNode, {});
+			ontabtap(e) {
+				let index = e.target.dataset.current || e.currentTarget.dataset.current;
+				this.switchTab(index);
+			},
+			ontabchange(e) {
+				let index = e.target.current || e.detail.current;
+				this.switchTab(index);
+			},
+			switchTab(index) {
+				if (this.newsList[index].data.length === 0) {
+					this.getList(index);
 				}
-				// 首次切换后加载数据
-				const activeTab = this.newsList[this.tabIndex];
-				if (activeTab.data.length === 0) {
-					this.getList();
-				}
-			},
-			getNodeSize(node) {
-				return new Promise((resolve, reject) => {
-					dom.getComponentRect(node, (result) => {
-						resolve(result.size);
-					});
-				});
-			},
-			onRefresh(event) {
-				this.refreshText = '正在刷新...';
-				this.refreshing = true;
-				this.getList();
-			},
-			onPullingDown(event) {
-				if (this.refreshing) {
+
+				if (this.tabIndex === index) {
 					return;
 				}
-				if (Math.abs(event.pullingDistance) > Math.abs(event.viewHeight)) {
-					this.refreshText = "释放立即刷新";
-				} else {
-					this.refreshText = "下拉可以刷新";
+
+				// 缓存 tabId
+				if (this.newsList[this.tabIndex].data.length > MAX_CACHE_DATA) {
+					let isExist = this.cacheTab.indexOf(this.tabIndex);
+					if (isExist < 0) {
+						this.cacheTab.push(this.tabIndex);
+						//console.log("cache index:: " + this.tabIndex);
+					}
 				}
+
+				this.tabIndex = index;
+				this.scrollInto = this.tabBars[index].id;
+
+				// 释放 tabId
+				if (this.cacheTab.length > MAX_CACHE_PAGE) {
+					let cacheIndex = this.cacheTab[0];
+					this.clearTabData(cacheIndex);
+					this.cacheTab.splice(0, 1);
+					//console.log("remove cache index:: " + cacheIndex);
+				}
+			},
+			clearTabData(e) {
+				this.newsList[e].data.length = 0;
+				this.newsList[e].loadingText = "加载更多...";
+			},
+			refreshData() {},
+			onrefresh(e) {
+				var tab = this.newsList[this.tabIndex];
+				if (!tab.refreshFlag) {
+					return;
+				}
+				tab.refreshing = true;
+				tab.refreshText = "正在刷新...";
+
+				setTimeout(() => {
+					this.refreshData();
+					this.pulling = true;
+					tab.refreshing = false;
+					tab.refreshText = "已刷新";
+					setTimeout(() => { // TODO fix ios和Android 动画时间相反问题
+						this.pulling = false;
+					}, 500);
+				}, 2000);
+			},
+			onpullingdown(e) {
+				var tab = this.newsList[this.tabIndex];
+				if (tab.refreshing || this.pulling) {
+					return;
+				}
+				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
+					tab.refreshFlag = true;
+					tab.refreshText = "释放立即刷新";
+				} else {
+					tab.refreshFlag = false;
+					tab.refreshText = "下拉可以刷新";
+				}
+			},
+			newGuid() {
+				let s4 = function() {
+					return (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+				}
+				return (s4() + s4() + "-" + s4() + "-4" + s4().substr(0, 3) + "-" + s4() + "-" + s4() + s4() + s4()).toUpperCase();
 			}
 		}
 	}
 </script>
 
 <style>
-	.tab-bar-item {
-		width: 150px;
-		height: 100px;
+	page {
+		width: 100%;
+		min-height: 100%;
+		display: flex;
+		overflow-x: hidden;
+	}
+
+	.tabs {
+		flex: 1;
+		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		overflow: hidden;
+		background-color: #ffffff;
+		min-height: 100%;
+		/* #ifdef MP-ALIPAY */
+		height: 100vh;
+		/* #endif */
 	}
 
-	.tab-bar-title {
-		height: 100px;
-		line-height: 100px;
-		font-size: 30px;
+	.scroll-h {
+		width: 750upx;
+		height: 80upx;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		white-space: nowrap;
+		/* border-color: #cccccc;
+		border-bottom-style: solid;
+		border-bottom-width: 1px; */
+	}
+
+	.line-h {
+		height: 1upx;
+		background-color: #cccccc;
+	}
+
+	.uni-tab-item {
+		display: inline-block;
+		flex-wrap: nowrap;
+		white-space: nowrap;
+		padding-left: 34upx;
+		padding-right: 34upx;
+	}
+
+	.uni-tab-item-title {
+		display: block;
 		color: #555;
+		font-size: 30upx;
+		height: 80upx;
+		line-height: 80upx;
+		white-space: nowrap;
 	}
 
-	.active {
+	.uni-tab-item-title-active {
 		color: #007AFF;
 	}
 
-	.loadmore {
-		height: 70px;
-		width: 750px;
-		flex-direction: column;
-		justify-content: center;
+	.swiper-box {
+		flex: 1;
+		display: flex;
 	}
 
-	.loadmore-text {
-		font-size: 30px;
+	.swiper-item {
+		flex: 1;
+		display: flex;
+	}
+
+	.scroll-v {
+		/* flex: 1; */
+		/* #ifndef MP-ALIPAY */
+		display: flex;
+		flex-direction: column;
+		/* #endif */
+		width: 750upx;
+	}
+
+	.update-tips {
+		position: absolute;
+		left: 0;
+		top: 41px;
+		right: 0;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		background-color: #FDDD9B;
+		align-items: center;
+		justify-content: center;
 		text-align: center;
-		color: #999999;
+	}
+
+	.update-tips-text {
+		font-size: 14px;
+		color: #ffffff;
 	}
 
 	.refresh {
-		width: 750px;
-		height: 70px;
-		flex-direction: row;
-		align-items: center;
+		width: 750upx;
+		height: 64px;
 		justify-content: center;
 	}
 
-	.refresh-text {
-		text-align: center;
-		font-size: 28px;
+	.refresh-view {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+		margin: auto;
+	}
+
+	.refresh-icon {
+		width: 32px;
+		height: 32px;
+		transition-duration: .5s;
+		transition-property: transform;
+		transform: rotate(0deg);
+		transform-origin: center;
+	}
+
+	.refresh-icon-active {
+		transform: rotate(180deg);
+	}
+
+	.loading-icon {
+		width: 20px;
+		height: 20px;
+		margin-right: 5px;
+	}
+
+	.loading-icon-active {
+		transform: rotate(21600deg);
+	}
+
+	.loading-text {
+		margin-left: 2px;
+		font-size: 16px;
 		color: #999999;
+	}
+
+	.loading-more {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		text-align: center;
+	}
+
+	.loading-more-text {
+		font-size: 28upx;
+		color: #999;
 	}
 </style>
