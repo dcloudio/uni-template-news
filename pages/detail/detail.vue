@@ -17,6 +17,10 @@
 </template>
 
 <script>
+	// #ifdef MP-ALIPAY
+	import htmlParser from '@/common/html-parser'
+	// #endif
+
 	const FAIL_CONTENT = '<p>获取信息失败</p>';
 	export default {
 		data() {
@@ -50,7 +54,12 @@
 					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
 					success: (result) => {
 						if (result.statusCode == 200) {
+							// #ifdef MP-ALIPAY
+							this.content = htmlParser(result.data.content);
+							// #endif
+							// #ifndef MP-ALIPAY
 							this.content = result.data.content;
+							// #endif
 						} else {
 							this.content = FAIL_CONTENT;
 						}
