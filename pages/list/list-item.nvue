@@ -174,14 +174,21 @@
 	.max-close-view {
 		align-items: center;
 		flex-direction: row;
-		width: 50upx;
+		width: 40upx;
+		height: 30upx;
+		line-height: 30upx;
+		border-width: 1upx;
+		border-style: solid;
+		border-color: #aaaaaa;
+		border-radius: 4px;
 		justify-content: center;
 		text-align: center;
 	}
 
 	.close {
-		color: #ddd;
-		font-size: 28upx;
+		color: #aaaaaa;
+		font-size: 26upx;
+		line-height: 26upx;
 		text-align: center;
 	}
 </style>
