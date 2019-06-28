@@ -18,7 +18,9 @@
 						</div>
 					</refresh>
 					<!-- #endif -->
-					<media-item v-for="(newsitem,index2) in tab.data" :key="newsitem.id" :options="newsitem" @close="dislike(index1,index2)" @click="goDetail(newsitem)"></media-item>
+					<view v-for="(newsitem,index2) in tab.data" :key="newsitem.id">
+						<media-item :options="newsitem" @close="dislike(index1,index2)" @click="goDetail(newsitem)"></media-item>
+					</view>
 					<view class="loading-more">
 						<text class="loading-more-text">{{tab.loadingText}}</text>
 					</view>
