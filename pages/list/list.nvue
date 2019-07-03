@@ -252,21 +252,20 @@
 </script>
 
 <style>
+	/* #ifndef APP-PLUS */
 	page {
 		width: 100%;
 		min-height: 100%;
 		display: flex;
-		overflow-x: hidden;
 	}
+	/* #endif */
 
 	.tabs {
 		flex: 1;
-		display: flex;
 		flex-direction: column;
 		overflow: hidden;
 		background-color: #ffffff;
-		min-height: 100%;
-		/* #ifdef MP-ALIPAY */
+		/* #ifdef MP-ALIPAY || MP-BAIDU */
 		height: 100vh;
 		/* #endif */
 	}
@@ -274,10 +273,11 @@
 	.scroll-h {
 		width: 750upx;
 		height: 80upx;
-		display: flex;
 		flex-direction: row;
-		flex-wrap: nowrap;
+		/* #ifndef APP-PLUS */
 		white-space: nowrap;
+		/* #endif */
+		/* flex-wrap: nowrap; */
 		/* border-color: #cccccc;
 		border-bottom-style: solid;
 		border-bottom-width: 1px; */
@@ -289,20 +289,23 @@
 	}
 
 	.uni-tab-item {
+		/* #ifndef APP-PLUS */
 		display: inline-block;
+		/* #endif */
 		flex-wrap: nowrap;
-		white-space: nowrap;
 		padding-left: 34upx;
 		padding-right: 34upx;
 	}
 
 	.uni-tab-item-title {
-		display: block;
 		color: #555;
 		font-size: 30upx;
 		height: 80upx;
 		line-height: 80upx;
+		flex-wrap: nowrap;
+		/* #ifndef APP-PLUS */
 		white-space: nowrap;
+		/* #endif */
 	}
 
 	.uni-tab-item-title-active {
@@ -311,18 +314,15 @@
 
 	.swiper-box {
 		flex: 1;
-		display: flex;
 	}
 
 	.swiper-item {
 		flex: 1;
-		display: flex;
 	}
 
 	.scroll-v {
-		/* flex: 1; */
+		flex: 1;
 		/* #ifndef MP-ALIPAY */
-		display: flex;
 		flex-direction: column;
 		/* #endif */
 		width: 750upx;
@@ -353,12 +353,10 @@
 	}
 
 	.refresh-view {
-		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
 		align-items: center;
 		justify-content: center;
-		margin: auto;
 	}
 
 	.refresh-icon {
@@ -367,7 +365,7 @@
 		transition-duration: .5s;
 		transition-property: transform;
 		transform: rotate(0deg);
-		transform-origin: center;
+		transform-origin: 16px 16px;
 	}
 
 	.refresh-icon-active {
@@ -391,7 +389,6 @@
 	}
 
 	.loading-more {
-		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding-top: 10px;

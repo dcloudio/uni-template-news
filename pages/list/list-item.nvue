@@ -2,7 +2,8 @@
 	<!-- remove list-cell layer fix android 4.x overflow limit error: 28 layers! -->
 	<!-- <view class="list-cell view" @click="click"></view> -->
 	<view class="media-item view" v-if="options.title" @click="click">
-		<view class="view" :class="{'media-image-right': options.article_type === 2, 'media-image-left': options.article_type === 1}">
+		<!-- <view class="view" :style="options.article_type === 2 ? 'flex-direction: row';" :class="{'media-image-right': options.article_type === 2, 'media-image-left': options.article_type === 1}"> -->
+		<view class="view" :style="options.article_type === 2 ? 'flex-direction: row': 'flex-direction: row-reverse'">
 			<text class="media-title" :class="{'media-title2': options.article_type === 1 || options.article_type === 2}">{{options.title}}</text>
 			<view v-if="options.image_list || options.image_url" class="image-section flex-row" :class="{'image-section-right': options.article_type === 2, 'image-section-left': options.article_type === 1}">
 				<image class="image-list1" :class="{'image-list2': options.article_type === 1 || options.article_type === 2}" v-if="options.image_url"
@@ -11,17 +12,17 @@
 				 :key="i" />
 			</view>
 		</view>
-		<view class="media-foot flex-row">
-			<view class="media-info flex-row">
+		<view class="media-foot flex-row" style="flex-direction: row;">
+			<view class="media-info flex-row" style="flex-direction: row;">
 				<text class="info-text">{{options.source}}</text>
 				<text class="info-text">{{options.comment_count}}条评论</text>
 				<text class="info-text">{{options.datetime}}</text>
 			</view>
-			<view class="max-close-view flex-row" @click.stop="close">
+			<view class="max-close-view flex-row" @click.stop="close" style="flex-direction: row;">
 				<text class="close">×</text>
 			</view>
 		</view>
-		<view class="media-item-line"></view>
+		<view class="media-item-line" style="position: absolute;"></view>
 	</view>
 </template>
 
@@ -48,21 +49,15 @@
 
 <style>
 	.view {
-		display: flex;
 		flex-direction: column;
-		box-sizing: border-box;
 	}
 
 	.flex-row {
-		display: flex;
 		flex-direction: row;
-		box-sizing: border-box;
 	}
 
 	.flex-col {
-		display: flex;
 		flex-direction: column;
-		box-sizing: border-box;
 	}
 
 	.list-cell {
