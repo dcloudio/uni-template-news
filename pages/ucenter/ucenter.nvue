@@ -4,7 +4,7 @@
 			<image class="logo-img" :src="login ? uerInfo.avatarUrl :avatarUrl"></image>
 			<view class="logo-title">
 				<text class="uer-name">Hi，{{login ? uerInfo.name : '您未登录'}}</text>
-				<text class="go-login navigat-arrow" v-if="!login">&#xe65e;</text>
+				<text class="go-login-navigat-arrow navigat-arrow" v-if="!login">&#xe65e;</text>
 			</view>
 		</view>
 		<view class="center-list">
@@ -61,31 +61,38 @@
 </script>
 
 <style>
+	/* #ifndef APP-PLUS-NVUE */
 	@font-face {
 		font-family: texticons;
 		font-weight: normal;
 		font-style: normal;
-		src: url('https://at.alicdn.com/t/font_984210_5cs13ndgqsn.ttf') format('truetype');
-	}
-
-	page,
-	view {
-		display: flex;
+		src: url('~@/static/text-icon.ttf') format('truetype');
 	}
 
 	page {
 		background-color: #f8f8f8;
 	}
 
+	/* #endif*/
+
+	/* 解决头条小程序字体图标不显示问题，因为头条运行时自动插入了span标签，且有全局字体 */
+	/* #ifdef MP-TOUTIAO */
+	text :not(view) {
+		font-family: texticons;
+	}
+
+	/* #endif */
+
 	.center {
+		flex: 1;
 		flex-direction: column;
+		background-color: #f8f8f8;
 	}
 
 	.logo {
 		width: 750upx;
 		height: 240upx;
 		padding: 20upx;
-		box-sizing: border-box;
 		background-color: #2F85FC;
 		flex-direction: row;
 		align-items: center;
@@ -117,30 +124,29 @@
 		color: #FFFFFF;
 	}
 
-	.go-login.navigat-arrow {
+	.go-login-navigat-arrow {
 		font-size: 38upx;
 		color: #FFFFFF;
 	}
 
 	.login-title {
 		height: 150upx;
-		align-items: self-start;
-		justify-content: center;
 		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		margin-left: 20upx;
 	}
 
 	.center-list {
+		flex-direction: column;
 		background-color: #FFFFFF;
 		margin-top: 20upx;
 		width: 750upx;
-		flex-direction: column;
 	}
 
 	.center-list-item {
 		height: 90upx;
 		width: 750upx;
-		box-sizing: border-box;
 		flex-direction: row;
 		padding: 0upx 20upx;
 	}
@@ -168,7 +174,6 @@
 		font-size: 34upx;
 		color: #555;
 		flex: 1;
-		text-align: left;
 	}
 
 	.navigat-arrow {

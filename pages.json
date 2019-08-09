@@ -10,7 +10,8 @@
 		{
 			"path": "pages/ucenter/ucenter",
 			"style": {
-				"navigationBarTitleText": "个人中心"
+				"navigationBarTitleText": "个人中心",
+				"backgroundColor":"#ffffff"
 			}
 		}
 	],

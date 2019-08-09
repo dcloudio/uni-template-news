@@ -1,12 +1,19 @@
 <script>
 	export default {
-		onLaunch: function () {
+		onLaunch: function() {
 			console.log('App Launch')
+			// #ifdef APP-PLUS-NVUE
+			var domModule = weex.requireModule('dom');
+			domModule.addRule('fontFace', {
+				'fontFamily': "texticons",
+				'src': "url('./static/text-icon.ttf')"
+			});
+			// #endif
 		},
-		onShow: function () {
+		onShow: function() {
 			console.log('App Show')
 		},
-		onHide: function () {
+		onHide: function() {
 			console.log('App Hide')
 		}
 	}

@@ -1,13 +1,14 @@
 {
     "name" : "新闻资讯",
-    "appid" : "__UNI__1E99193",
+    "appid" : "",
     "description" : "基于uni-app开发的新闻/资讯类App模板",
-    "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionName" : "1.0.2",
+    "versionCode" : 102,
     "transformPx" : false,
     "app-plus" : {
-        "usingComponents": true,
-		"nvueCompiler":"uni-app",
+        "usingComponents" : true,
+        "nvueCompiler" : "uni-app",
+        "renderer" : "native",
         /* 5+App特有相关 */
         "modules" : {},
         /* 模块配置 */
@@ -42,8 +43,7 @@
             },
             "ios" : {},
             /* ios打包配置 */
-            "sdkConfigs" : {},
-            "icons" : {}
+            "sdkConfigs" : {}
         }
     },
     /* SDK配置 */
@@ -55,7 +55,7 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents": true
+        "usingComponents" : true
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -70,6 +70,11 @@
         "router" : {
             "base" : "/demo/news/website/"
         },
-        "template" : "h5.template.html"
+        "template" : "h5.template.html",
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        }
     }
 }
