@@ -2,12 +2,14 @@
 	<view>
 		<view class="banner" auto-focus>
 			<image class="banner-img" :src="banner.image_url"></image>
-			<text class="banner-title">{{banner.title}}</text>
+			<view class="title-area">
+				<text class="title-text">{{banner.title}}</text>
+			</view>
 		</view>
 		<view class="article-meta">
-			<text class="article-author">{{banner.source}}</text>
-			<text class="article-text">发表于</text>
-			<text class="article-time">{{banner.datetime}}</text>
+			<text class="article-meta-text article-author">{{banner.source}}</text>
+			<text class="article-meta-text article-text">发表于</text>
+			<text class="article-meta-text article-time">{{banner.datetime}}</text>
 		</view>
 		<view class="article-content">
 			<rich-text :nodes="content" style="font-size: 30rpx;"></rich-text>
@@ -113,22 +115,31 @@
 		flex: 1;
 	}
 
-	.banner-title {
+	.title-area {
 		position: absolute;
 		left: 30upx;
+		right: 30upx;
 		bottom: 30upx;
-		font-size: 32upx;
-		font-weight: 400;
-		line-height: 42upx;
-		color: #ffffff;
-		overflow: hidden;
 		z-index: 11;
 	}
 
+	.title-text {
+		font-size: 32upx;
+		font-weight: 400;
+		line-height: 42upx;
+		lines: 2;
+		color: #ffffff;
+		overflow: hidden;
+	}
+
 	.article-meta {
-		padding: 20upx 40upx;
+		padding: 20upx 30upx;
 		flex-direction: row;
+		align-items: center;
 		justify-content: flex-start;
+	}
+
+	.article-meta-text {
 		color: gray;
 	}
 
