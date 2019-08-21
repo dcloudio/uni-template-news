@@ -5,6 +5,9 @@
 	"versionName": "1.0.4",
 	"versionCode": 104,
 	"transformPx": false,
+	"uniStatistics": {
+		"enable": true
+	},
 	"app-plus": {
 		"usingComponents": true,
 		"nvueCompiler": "uni-app",
