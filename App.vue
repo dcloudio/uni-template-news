@@ -3,6 +3,8 @@
 		onLaunch: function() {
 			console.log('App Launch')
 			// #ifdef APP-NVUE
+			plus.screen.lockOrientation('portrait-primary');
+
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",
