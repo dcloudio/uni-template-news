@@ -2,7 +2,7 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
-			// #ifdef APP-PLUS-NVUE
+			// #ifdef APP-NVUE
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",

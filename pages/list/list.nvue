@@ -8,10 +8,12 @@
 		<view class="line-h"></view>
 		<swiper :current="tabIndex" class="swiper-box" style="flex: 1;" :duration="300" @change="ontabchange">
 			<swiper-item class="swiper-item" v-for="(tab,index1) in newsList" :key="index1">
-				<!-- #ifdef APP-PLUS-NVUE -->
-				<list class="scroll-v list" enableBackToTop="true" scroll-y loadmoreoffset="10" @loadmore="loadMore(index1)">
+				<!-- #ifdef APP-NVUE -->
+				<list class="scroll-v list" enableBackToTop="true" scroll-y loadmoreoffset="15" @loadmore="loadMore(index1)">
 					<refresh class="refresh" @refresh="onrefresh(index1)" @pullingdown="onpullingdown" :display="tab.refreshing ? 'show' : 'hide'">
 						<div class="refresh-view">
+							<!-- <image class="refresh-icon" :src="refreshIcon"
+							:style="{width: (tab.refreshing || pulling) ? 0: '30px', transform: 'rotate(' + tab.angle + 'deg)'}"></image> -->
 							<image class="refresh-icon" :src="refreshIcon" :style="{width: (tab.refreshing || pulling) ? 0: '30px'}" :class="{'refresh-icon-active': tab.refreshFlag}"></image>
 							<loading-indicator class="loading-icon" animating="true" v-if="tab.refreshing"></loading-indicator>
 							<text class="loading-text">{{tab.refreshText}}</text>
@@ -20,17 +22,17 @@
 					<cell v-for="(newsitem,index2) in tab.data" :key="newsitem.id">
 						<media-item :options="newsitem" @close="dislike(index1,index2)" @click="goDetail(newsitem)"></media-item>
 					</cell>
-					<cell class="loading-more" v-if="tab.isLoading">
+					<cell class="loading-more" v-if="tab.isLoading || tab.data.length > 4">
 						<text class="loading-more-text">{{tab.loadingText}}</text>
 					</cell>
 				</list>
 				<!-- #endif -->
-				<!-- #ifndef APP-PLUS-NVUE -->
+				<!-- #ifndef APP-NVUE -->
 				<scroll-view class="scroll-v list" enableBackToTop="true" scroll-y @scrolltolower="loadMore(index1)">
 					<view v-for="(newsitem,index2) in tab.data" :key="newsitem.id">
 						<media-item :options="newsitem" @close="dislike(index1,index2)" @click="goDetail(newsitem)"></media-item>
 					</view>
-					<view class="loading-more" v-if="tab.isLoading">
+					<view class="loading-more" v-if="tab.isLoading || tab.data.length > 4">
 						<text class="loading-more-text">{{tab.loadingText}}</text>
 					</view>
 				</scroll-view>
@@ -99,14 +101,15 @@
 					refreshing: false,
 					refreshFlag: false,
 					refreshText: "",
+					isLoading: false,
+					loadingText: '加载中...',
+					angle: 0,
 					requestParams: {
 						columnId: tabBar.newsid,
 						minId: 0,
 						pageSize: 10,
 						column: 'id,post_id,title,author_name,cover,published_at,comments_count'
-					},
-					isLoading: false,
-					loadingText: '加载中...'
+					}
 				});
 			});
 			this.getList(0);
@@ -114,6 +117,9 @@
 		methods: {
 			getList(index, action = 1) {
 				let activeTab = this.newsList[index];
+				if (activeTab.isLoading) {
+					return;
+				}
 				activeTab.requestParams.time = new Date().getTime() + '';
 				if (action === 1) {
 					activeTab.requestParams.minId = 0;
@@ -190,6 +196,7 @@
 				this.switchTab(index);
 			},
 			ontabchange(e) {
+				// 注意：百度小程序会触发2次
 				let index = e.target.current || e.detail.current;
 				this.switchTab(index);
 			},
@@ -243,7 +250,7 @@
 					tab.refreshing = false;
 					tab.refreshText = "已刷新";
 					tab.refreshFlag = false;
-					setTimeout(() => { // TODO fix ios和Android 动画时间相反问题
+					setTimeout(() => {
 						this.pulling = false;
 					}, 500);
 				}, 2000);
@@ -253,6 +260,13 @@
 				if (tab.refreshing || this.pulling) {
 					return;
 				}
+
+				// var angle = (e.pullingDistance) / e.viewHeight * 180;
+				// if (angle > 180) {
+				// 	angle = 180;
+				// }
+				// tab.angle = angle;
+
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					tab.refreshFlag = true;
 					tab.refreshText = "释放立即刷新";
@@ -339,6 +353,7 @@
 
 	.swiper-item {
 		flex: 1;
+		flex-direction: row;
 	}
 
 	.scroll-v {
@@ -409,8 +424,8 @@
 	.loading-more {
 		align-items: center;
 		justify-content: center;
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: 14px;
+		padding-bottom: 14px;
 		text-align: center;
 	}
 
