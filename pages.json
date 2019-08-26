@@ -6,32 +6,8 @@
 		{
 			"path": "pages/detail/detail",
 			"style": {}
-		},
-		{
-			"path": "pages/ucenter/ucenter",
-			"style": {
-				"navigationBarTitleText": "个人中心",
-				"backgroundColor":"#ffffff"
-			}
 		}
 	],
-	"tabBar": {
-		"color": "#000000",
-		"selectedColor": "#2F85FC",
-		"backgroundColor": "#FFFFFF",
-		"borderStyle": "black",
-		"list": [{
-			"pagePath": "pages/list/list",
-			"iconPath": "static/home.png",
-			"selectedIconPath": "static/home-active.png",
-			"text": "资讯"
-		}, {
-			"pagePath": "pages/ucenter/ucenter",
-			"iconPath": "static/center.png",
-			"selectedIconPath": "static/center-active.png",
-			"text": "我的"
-		}]
-	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "新闻资讯",
