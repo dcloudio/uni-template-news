@@ -6,7 +6,7 @@
 			</view>
 		</scroll-view>
 		<view class="line-h"></view>
-		<swiper :current="tabIndex" class="swiper-box" style="flex: 1;" :duration="300" @change="ontabchange">
+		<swiper :current="tabIndex" class="swiper-box" style="flex: 1;" :duration="300" @change="ontabchange" @transition="onswiperscroll">
 			<swiper-item class="swiper-item" v-for="(tab,index1) in newsList" :key="index1">
 				<!-- #ifdef APP-NVUE -->
 				<list class="scroll-v list" enableBackToTop="true" scroll-y loadmoreoffset="15" @loadmore="loadMore(index1)">
@@ -37,6 +37,7 @@
 					</view>
 				</scroll-view>
 				<!-- #endif -->
+				<no-data class="no-data" v-if="tab.isNoData" @retry="loadMore"></no-data>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -46,6 +47,7 @@
 		friendlyDate
 	} from '@/common/util.js';
 
+	import noData from '@/components/nodata.nvue';
 	import mediaItem from './list-item.nvue';
 
 	// 缓存每页最多
@@ -53,8 +55,13 @@
 	// 缓存页签数量
 	const MAX_CACHE_PAGE = 3;
 
+	const TAB_PRELOAD_OFFSET = 5;
+
+	var dateList = [];
+
 	export default {
 		components: {
+			noData,
 			mediaItem
 		},
 		data() {
@@ -103,6 +110,7 @@
 					refreshText: "",
 					isLoading: false,
 					loadingText: '加载中...',
+					isNoData: false,
 					angle: 0,
 					requestParams: {
 						columnId: tabBar.newsid,
@@ -125,6 +133,8 @@
 					activeTab.requestParams.minId = 0;
 				}
 				activeTab.isLoading = true;
+				activeTab.isNoData = false;
+				var lDate = new Date();
 				uni.request({
 					url: 'https://unidemo.dcloud.net.cn/api/news',
 					data: activeTab.requestParams,
@@ -132,6 +142,7 @@
 						if (result.statusCode !== 200) {
 							return;
 						}
+						activeTab.isNoData = (result.data.length <= 0);
 						const data = result.data.map((news) => {
 							return {
 								id: this.newGuid() + news.id,
@@ -156,10 +167,7 @@
 						activeTab.requestParams.minId = data[data.length - 1].newsid;
 					},
 					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						})
+						activeTab.isNoData = true;
 					},
 					complete: (e) => {
 						activeTab.isLoading = false;
@@ -190,6 +198,21 @@
 			},
 			loadMore(e) {
 				this.getList(this.tabIndex, 2);
+			},
+			onswiperscroll(e) {
+				var offsetX = e.detail.dx;
+				var preloadIndex = this.tabIndex;
+				if (offsetX > TAB_PRELOAD_OFFSET) {
+					preloadIndex++;
+				} else if (offsetX < -TAB_PRELOAD_OFFSET) {
+					preloadIndex--;
+				}
+				if (preloadIndex === this.tabIndex || preloadIndex < 0 || preloadIndex > this.newsList.length - 1) {
+					return;
+				}
+				if (this.newsList[preloadIndex].data.length === 0) {
+					this.getList(preloadIndex);
+				}
 			},
 			ontabtap(e) {
 				let index = e.target.dataset.current || e.currentTarget.dataset.current;
@@ -323,6 +346,16 @@
 		background-color: #cccccc;
 	}
 
+	.no-data {
+		flex: 1;
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+	}
+
 	.uni-tab-item {
 		/* #ifndef APP-PLUS */
 		display: inline-block;
@@ -412,7 +445,7 @@
 		width: 20px;
 		height: 20px;
 		margin-right: 5px;
-		color: #999999;
+		color: gray;
 	}
 
 	.loading-text {

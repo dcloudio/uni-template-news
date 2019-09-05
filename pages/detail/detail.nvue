@@ -12,7 +12,7 @@
 			<text class="article-meta-text article-time">{{banner.datetime}}</text>
 		</view>
 		<view class="article-content">
-			<rich-text :nodes="content" style="font-size: 30rpx;"></rich-text>
+			<rich-text :nodes="content" style="line-height: 20px; font-size: 14px;"></rich-text>
 		</view>
 		<view class="comment-wrap"></view>
 	</view>
@@ -68,11 +68,6 @@
 			});
 
 			this.getDetail();
-
-			uni.report("system", {
-				name: "title",
-				value: this.banner.title
-			});
 		},
 		methods: {
 			getDetail() {

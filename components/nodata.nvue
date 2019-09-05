@@ -1,0 +1,138 @@
+<template>
+	<view class="nodata">
+		<view class="nodata-content">
+			<view class="text-view a-i-c j-c-c t-a-c">
+				<text class="title">{{textTypes[networkType]}}</text>
+			</view>
+			<view class="icon-view"></view>
+			<view class="opera-view">
+				<view class="btn btn-default" v-if="networkType!='none'" @click="retry">
+					<text class="btn-text">重试</text>
+				</view>
+				<view class="btn btn-default" v-if="networkType=='none'" @click="openSettings">
+					<text class="btn-text">设置</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	// #ifdef APP-PLUS
+	import permision from "@/common/permission.js"
+	// #endif
+
+	export default {
+		name: 'nodata',
+		data() {
+			return {
+				textTypes: {
+					none: "暂无网络"
+				},
+				isConnected: false,
+				networkType: "none"
+			}
+		},
+		mounted() {
+			uni.onNetworkStatusChange((res) => {
+				this.isConnected = res.isConnected;
+				this.networkType = res.networkType;
+				console.log(this.isConnected);
+				console.log(this.networkType);
+			});
+			uni.getNetworkType({
+				success: (res) => {
+					this.networkType = res.networkType;
+				}
+			});
+		},
+		methods: {
+			retry() {
+				this.$emit('retry');
+			},
+			async openSettings() {
+				if (this.networkType == "none") {
+					this.openSystemSettings();
+					return;
+				}
+
+				let status = await permision.requestIOS("network");
+				console.log(status);
+			},
+			openAppSettings() {
+				permision.gotoAppSetting();
+			},
+			openSystemSettings() {
+				if (permision.isIOS) {
+					permision.gotoiOSSetting();
+				} else {
+					permision.gotoAndroidSetting();
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+	.a-i-c {
+		align-items: center;
+	}
+
+	.j-c-c {
+		justify-content: center;
+	}
+
+	.t-a-c {
+		text-align: center;
+	}
+
+	.nodata {
+		flex: 1;
+		flex-direction: column;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 30px;
+		background-color: #f8f8f8;
+	}
+
+	.nodata-content {
+		transform: translateY(-50px);
+	}
+
+	.text-view {
+		margin-bottom: 40px;
+	}
+
+	.title {
+		color: #999999;
+		font-size: 18px;
+	}
+
+	.opera-view {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.btn {
+		padding: 5px 10px;
+		width: 128px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.btn-text {
+		color: #999999;
+		font-size: 15px;
+	}
+
+	.btn-default {
+		border-color: #999999;
+		border-style: solid;
+		border-width: 1px;
+		border-radius: 3px;
+	}
+</style>
