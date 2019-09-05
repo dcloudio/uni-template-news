@@ -18,10 +18,6 @@
 </template>
 
 <script>
-	// #ifdef APP-PLUS
-	import permision from "@/common/permission.js"
-	// #endif
-
 	export default {
 		name: 'nodata',
 		data() {
@@ -34,6 +30,7 @@
 			}
 		},
 		mounted() {
+			this.isIOS = (uni.getSystemInfoSync().platform === 'ios');
 			uni.onNetworkStatusChange((res) => {
 				this.isConnected = res.isConnected;
 				this.networkType = res.networkType;
@@ -55,19 +52,72 @@
 					this.openSystemSettings();
 					return;
 				}
-
-				let status = await permision.requestIOS("network");
-				console.log(status);
 			},
 			openAppSettings() {
-				permision.gotoAppSetting();
+				this.gotoAppSetting();
 			},
 			openSystemSettings() {
-				if (permision.isIOS) {
-					permision.gotoiOSSetting();
+				if (this.isIOS) {
+					this.gotoiOSSetting();
 				} else {
-					permision.gotoAndroidSetting();
+					this.gotoAndroidSetting();
 				}
+			},
+			network() {
+				var result = null;
+				var cellularData = plus.ios.newObject("CTCellularData");
+				var state = cellularData.plusGetAttribute("restrictedState");
+				if (state == 0) {
+					result = null;
+					console.log("StateUnknown");
+				} else if (state == 2) {
+					result = 1;
+					console.log("已经开启了互联网权限:NotRestricted");
+				} else if (state == 1) {
+					result = 2;
+					console.log("Restricted");
+				}
+				plus.ios.deleteObject(cellularData);
+				return result;
+			},
+			gotoAppSetting() {
+				if (this.isIOS) {
+					var UIApplication = plus.ios.import("UIApplication");
+					var application2 = UIApplication.sharedApplication();
+					var NSURL2 = plus.ios.import("NSURL");
+					var setting2 = NSURL2.URLWithString("app-settings:");
+					application2.openURL(setting2);
+					plus.ios.deleteObject(setting2);
+					plus.ios.deleteObject(NSURL2);
+					plus.ios.deleteObject(application2);
+				} else {
+					var Intent = plus.android.importClass("android.content.Intent");
+					var Settings = plus.android.importClass("android.provider.Settings");
+					var Uri = plus.android.importClass("android.net.Uri");
+					var mainActivity = plus.android.runtimeMainActivity();
+					var intent = new Intent();
+					intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+					var uri = Uri.fromParts("package", mainActivity.getPackageName(), null);
+					intent.setData(uri);
+					mainActivity.startActivity(intent);
+				}
+			},
+			gotoiOSSetting() {
+				var UIApplication = plus.ios.import("UIApplication");
+				var application2 = UIApplication.sharedApplication();
+				var NSURL2 = plus.ios.import("NSURL");
+				var setting2 = NSURL2.URLWithString("App-prefs:root=General");
+				application2.openURL(setting2);
+				plus.ios.deleteObject(setting2);
+				plus.ios.deleteObject(NSURL2);
+				plus.ios.deleteObject(application2);
+			},
+			gotoAndroidSetting() {
+				var Intent = plus.android.importClass("android.content.Intent");
+				var Settings = plus.android.importClass("android.provider.Settings");
+				var mainActivity = plus.android.runtimeMainActivity();
+				var intent = new Intent(Settings.ACTION_SETTINGS);
+				mainActivity.startActivity(intent);
 			}
 		}
 	}
@@ -89,7 +139,9 @@
 	.nodata {
 		flex: 1;
 		flex-direction: column;
+		/* #ifndef APP-PLUS */
 		display: flex;
+		/* #endif */
 		align-items: center;
 		justify-content: center;
 		padding: 30px;
