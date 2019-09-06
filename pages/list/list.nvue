@@ -102,6 +102,8 @@
 			}
 		},
 		onLoad() {
+			this.scrollTimer = null;
+			this.preloading = false;
 			this.tabBars.forEach((tabBar) => {
 				this.newsList.push({
 					data: [],
@@ -211,6 +213,10 @@
 					return;
 				}
 				if (this.newsList[preloadIndex].data.length === 0) {
+					// TODO
+					if (this.preloading) {
+						return;
+					}
 					this.getList(preloadIndex);
 				}
 			},
@@ -221,7 +227,14 @@
 			ontabchange(e) {
 				// 注意：百度小程序会触发2次
 				let index = e.target.current || e.detail.current;
-				this.switchTab(index);
+				if (this.scrollTimer == null) {
+					clearTimeout(this.scrollTimer);
+				}
+				this.preloading = true;
+				this.scrollTimer = setTimeout(() => {
+					this.switchTab(index);
+					this.preloading = false;
+				}, 400);
 			},
 			switchTab(index) {
 				if (this.newsList[index].data.length === 0) {
