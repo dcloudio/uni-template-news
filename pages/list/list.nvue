@@ -257,7 +257,6 @@
 					let isExist = this.cacheTab.indexOf(this.tabIndex);
 					if (isExist < 0) {
 						this.cacheTab.push(this.tabIndex);
-						//console.log("cache index:: " + this.tabIndex);
 					}
 				}
 
@@ -269,7 +268,6 @@
 					let cacheIndex = this.cacheTab[0];
 					this.clearTabData(cacheIndex);
 					this.cacheTab.splice(0, 1);
-					//console.log("remove cache index:: " + cacheIndex);
 				}
 			},
 			clearTabData(e) {
@@ -294,7 +292,7 @@
 				}
 				tab.pullTimer = setTimeout(() => {
 					tab.pulling = false;
-				}, 2000);
+				}, 1000);
 			},
 			onpullingdown(e) {
 				var tab = this.newsList[this.tabIndex];
