@@ -155,10 +155,6 @@
 		/* #ifndef APP-PLUS */
 		white-space: nowrap;
 		/* #endif */
-		/* flex-wrap: nowrap; */
-		/* border-color: #cccccc;
-		border-bottom-style: solid;
-		border-bottom-width: 1px; */
 	}
 
 	.tab-bar-line {
@@ -202,5 +198,10 @@
 	.page-item {
 		flex: 1;
 		flex-direction: row;
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
 	}
 </style>

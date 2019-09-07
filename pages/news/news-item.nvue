@@ -1,6 +1,5 @@
 <template>
 	<!-- remove list-cell layer fix android 4.x overflow limit error: 28 layers! -->
-	<!-- <view class="list-cell view" @click="click"></view> -->
 	<view class="media-item view" v-if="options.title" @click="click">
 		<!-- <view class="view" :style="options.article_type === 2 ? 'flex-direction: row';" :class="{'media-image-right': options.article_type === 2, 'media-image-left': options.article_type === 1}"> -->
 		<!-- TODO 在支付宝小程序下 需要用 style 覆盖标签的默认样式 -->
@@ -64,7 +63,6 @@
 	}
 
 	.list-cell {
-		width: 750upx;
 		padding: 0 30upx;
 	}
 
@@ -76,9 +74,6 @@
 		position: relative;
 		flex: 1;
 		flex-direction: column;
-		/* border-bottom-width: 1upx;
-		border-bottom-style: solid;
-		border-bottom-color: #ebebeb; */
 		padding: 20upx 30upx 21upx 30upx;
 	}
 

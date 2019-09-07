@@ -1,5 +1,5 @@
 <template>
-	<view class="page-news">
+	<view class="page-news" style="position: absolute;">
 		<!-- #ifdef APP-NVUE -->
 		<list class="listview" enableBackToTop="true" scroll-y loadmoreoffset="15" @loadmore="loadMore()">
 			<refresh class="refresh" @refresh="onrefresh()" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
@@ -18,7 +18,7 @@
 		</list>
 		<!-- #endif -->
 		<!-- #ifndef APP-NVUE -->
-		<scroll-view class="listview" enableBackToTop="true" scroll-y @scrolltolower="loadMore()">
+		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" scroll-y @scrolltolower="loadMore()">
 			<view v-for="(item, index) in dataList" :key="item.id">
 				<news-item :options="item" @close="closeItem(index)" @click="goDetail(item)"></news-item>
 			</view>
@@ -185,6 +185,7 @@
 				// }
 				// tab.angle = angle;
 
+				this.pulling = false;
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					this.refreshFlag = true;
 					this.refreshText = "释放立即刷新";
@@ -217,14 +218,22 @@
 	.page-news {
 		flex: 1;
 		flex-direction: column;
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
 	}
 
 	.listview {
 		flex: 1;
+		/* #ifndef MP-ALIPAY */
+		flex-direction: column;
+		/* #endif */
 	}
 
 	.refresh {
-		width: 750upx;
+		width: 750rpx;
 		height: 64px;
 		justify-content: center;
 	}
