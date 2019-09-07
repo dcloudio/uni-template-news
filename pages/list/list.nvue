@@ -14,7 +14,8 @@
 						<div class="refresh-view">
 							<!-- <image class="refresh-icon" :src="refreshIcon"
 							:style="{width: (tab.refreshing || pulling) ? 0: '30px', transform: 'rotate(' + tab.angle + 'deg)'}"></image> -->
-							<image class="refresh-icon" :src="refreshIcon" :style="{width: (tab.refreshing || pulling) ? 0: '30px'}" :class="{'refresh-icon-active': tab.refreshFlag}"></image>
+							<image class="refresh-icon" :src="refreshIcon" :style="{width: (tab.refreshing || tab.pulling) ? 0: '30px'}"
+							 :class="{'refresh-icon-active': tab.refreshFlag}"></image>
 							<loading-indicator class="loading-icon" animating="true" v-if="tab.refreshing"></loading-indicator>
 							<text class="loading-text">{{tab.refreshText}}</text>
 						</div>
@@ -103,6 +104,7 @@
 		},
 		onLoad() {
 			this.scrollTimer = null;
+			this.pullTimer = null;
 			this.preloading = false;
 			this.tabBars.forEach((tabBar) => {
 				this.newsList.push({
@@ -113,6 +115,7 @@
 					isLoading: false,
 					loadingText: '加载中...',
 					isNoData: false,
+					pulling: false,
 					angle: 0,
 					requestParams: {
 						columnId: tabBar.newsid,
@@ -160,7 +163,6 @@
 						});
 						if (action === 1) {
 							activeTab.data = data;
-							this.refreshing = false;
 						} else {
 							data.forEach((news) => {
 								activeTab.data.push(news);
@@ -173,6 +175,11 @@
 					},
 					complete: (e) => {
 						activeTab.isLoading = false;
+						if (action === 1) {
+							activeTab.refreshing = false;
+							activeTab.refreshText = "已刷新";
+							activeTab.refreshFlag = false;
+						}
 					}
 				});
 			},
@@ -270,30 +277,28 @@
 				this.newsList[e].loadingText = "加载更多...";
 			},
 			refreshData() {
-				this.getList(this.tabIndex);
-			},
-			onrefresh(e) {
 				var tab = this.newsList[this.tabIndex];
-				if (!tab.refreshFlag) {
+				if (tab.refreshing) {
 					return;
 				}
 				tab.refreshing = true;
 				tab.refreshText = "正在刷新...";
-
-				setTimeout(() => {
-					this.refreshData();
-					this.pulling = true;
-					tab.refreshing = false;
-					tab.refreshText = "已刷新";
-					tab.refreshFlag = false;
-					setTimeout(() => {
-						this.pulling = false;
-					}, 500);
+				this.getList(this.tabIndex, 1);
+			},
+			onrefresh(e) {
+				var tab = this.newsList[this.tabIndex];
+				this.refreshData();
+				tab.pulling = true;
+				if (tab.pullTimer) {
+					clearTimeout(tab.pullTimer);
+				}
+				tab.pullTimer = setTimeout(() => {
+					tab.pulling = false;
 				}, 2000);
 			},
 			onpullingdown(e) {
 				var tab = this.newsList[this.tabIndex];
-				if (tab.refreshing || this.pulling) {
+				if (tab.refreshing) {
 					return;
 				}
 
