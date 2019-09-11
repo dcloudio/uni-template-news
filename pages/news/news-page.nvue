@@ -10,7 +10,7 @@
 				</div>
 			</refresh>
 			<cell v-for="(item, index) in dataList" :key="item.id">
-				<news-item :options="item" @close="closeItem(index)" @click="goDetail(item)"></news-item>
+				<news-item :data="item" @close="closeItem(index)" @click="goDetail(item)"></news-item>
 			</cell>
 			<cell class="loading-more" v-if="isLoading || dataList.length > 4">
 				<text class="loading-more-text">{{loadingText}}</text>
@@ -20,7 +20,7 @@
 		<!-- #ifndef APP-NVUE -->
 		<scroll-view class="listview" style="flex: 1;" enableBackToTop="true" scroll-y @scrolltolower="loadMore()">
 			<view v-for="(item, index) in dataList" :key="item.id">
-				<news-item :options="item" @close="closeItem(index)" @click="goDetail(item)"></news-item>
+				<news-item :data="item" @close="closeItem(index)" @click="goDetail(item)"></news-item>
 			</view>
 			<view class="loading-more" v-if="isLoading || dataList.length > 4">
 				<text class="loading-more-text">{{loadingText}}</text>
@@ -44,7 +44,7 @@
 			newsItem
 		},
 		props: {
-			id: {
+			nid: {
 				type: [Number, String],
 				default: ''
 			}
@@ -52,8 +52,6 @@
 		data() {
 			return {
 				dataList: [],
-				scrollInto: "",
-				showTips: false,
 				navigateFlag: false,
 				pulling: false,
 				refreshing: false,
@@ -70,7 +68,7 @@
 		created() {
 			this.pullTimer = null;
 			this.requestParams = {
-				columnId: this.id,
+				columnId: this.nid,
 				minId: 0,
 				pageSize: 10,
 				column: 'id,post_id,title,author_name,cover,published_at,comments_count'

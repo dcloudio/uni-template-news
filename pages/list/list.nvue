@@ -176,6 +176,12 @@
 					complete: (e) => {
 						activeTab.isLoading = false;
 						if (action === 1) {
+							if (activeTab.pullTimer) {
+								clearTimeout(activeTab.pullTimer);
+							}
+							activeTab.pullTimer = setTimeout(() => {
+								activeTab.pulling = false;
+							}, 500);
 							activeTab.refreshing = false;
 							activeTab.refreshText = "已刷新";
 							activeTab.refreshFlag = false;
@@ -287,12 +293,6 @@
 				var tab = this.newsList[this.tabIndex];
 				this.refreshData();
 				tab.pulling = true;
-				if (tab.pullTimer) {
-					clearTimeout(tab.pullTimer);
-				}
-				tab.pullTimer = setTimeout(() => {
-					tab.pulling = false;
-				}, 1000);
 			},
 			onpullingdown(e) {
 				var tab = this.newsList[this.tabIndex];
@@ -306,6 +306,7 @@
 				// }
 				// tab.angle = angle;
 
+				this.pulling = false;
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					tab.refreshFlag = true;
 					tab.refreshText = "释放立即刷新";

@@ -1,23 +1,21 @@
 <template>
-	<!-- remove list-cell layer fix android 4.x overflow limit error: 28 layers! -->
-	<view class="media-item view" v-if="options.title" @click="click">
-		<!-- <view class="view" :style="options.article_type === 2 ? 'flex-direction: row';" :class="{'media-image-right': options.article_type === 2, 'media-image-left': options.article_type === 1}"> -->
-		<!-- TODO 在支付宝小程序下 需要用 style 覆盖标签的默认样式 -->
-		<view class="view" :style="{flexDirection: (options.article_type === 1 || options.article_type === 2)?(options.article_type === 2 ?'row':'row-reverse'):'column' }">
-			<text class="media-title" :class="{'media-title2': options.article_type === 1 || options.article_type === 2}">{{options.title}}</text>
-			<view v-if="options.image_list || options.image_url" class="image-section flex-row" :class="{'image-section-right': options.article_type === 2, 'image-section-left': options.article_type === 1}"
+	<!-- TODO 在支付宝小程序下 需要用 style 覆盖标签的默认样式 -->
+	<view class="media-item view" v-if="data.title" @click="click">
+		<view class="view" :style="{flexDirection: (data.article_type === 1 || data.article_type === 2)?(data.article_type === 2 ?'row':'row-reverse'):'column' }">
+			<text class="media-title" :class="{'media-title2': data.article_type === 1 || data.article_type === 2}">{{data.title}}</text>
+			<view v-if="data.image_list || data.image_url" class="image-section flex-row" :class="{'image-section-right': data.article_type === 2, 'image-section-left': data.article_type === 1}"
 			 :style="{flexDirection: 'row' }">
-				<image class="image-list1" :class="{'image-list2': options.article_type === 1 || options.article_type === 2}" v-if="options.image_url"
-				 :src="options.image_url"></image>
-				<image class="image-list3" v-if="options.image_list" :src="source.url" v-for="(source, i) in options.image_list"
+				<image class="image-list1" :class="{'image-list2': data.article_type === 1 || data.article_type === 2}" v-if="data.image_url"
+				 :src="data.image_url"></image>
+				<image class="image-list3" v-if="data.image_list" :src="source.url" v-for="(source, i) in data.image_list"
 				 :key="i" />
 			</view>
 		</view>
 		<view class="media-foot flex-row" style="flex-direction: row;">
 			<view class="media-info flex-row" style="flex-direction: row;">
-				<text class="info-text">{{options.source}}</text>
-				<text class="info-text">{{options.comment_count}}条评论</text>
-				<text class="info-text">{{options.datetime}}</text>
+				<text class="info-text">{{data.source}}</text>
+				<text class="info-text">{{data.comment_count}}条评论</text>
+				<text class="info-text">{{data.datetime}}</text>
 			</view>
 			<view class="max-close-view" @click.stop="close">
 				<view class="close-l close-h"></view>
@@ -31,7 +29,7 @@
 <script>
 	export default {
 		props: {
-			options: {
+			data: {
 				type: Object,
 				default: function(e) {
 					return {}

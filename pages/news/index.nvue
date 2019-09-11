@@ -1,27 +1,33 @@
 <template>
 	<view class="tabs">
+		<!-- android 4.x overflow limit error: 28 layers! -->
 		<scroll-view id="tab-bar" class="tab-bar" :scroll-x="true" :show-scrollbar="false" :scroll-into-view="scrollInto">
 			<view v-for="(tab,index) in tabList" :key="tab.id" class="uni-tab-item" :id="tab.id" :data-current="index" @click="ontabtap">
 				<text class="uni-tab-item-title" :class="tabIndex==index ? 'uni-tab-item-title-active' : ''">{{tab.name}}</text>
 			</view>
 		</scroll-view>
 		<view class="tab-bar-line"></view>
-		<swiper class="tab-box" :current="tabIndex" :duration="300" @change="ontabchange" @transition="onswiperscroll">
+		<swiper class="tab-box" :current="tabIndex" :duration="300" @change="onswiperchange" @transition="onswiperscroll" @animationfinish="animationfinish">
 			<swiper-item class="swiper-item" v-for="(page, index) in tabList" :key="index">
-				<newsPage class="page-item" :id="page.newsid" ref="page"></newsPage>
+				<!-- #ifndef MP-ALIPAY -->
+				<newsPage class="page-item" :nid="page.newsid" ref="page"></newsPage>
+				<!-- #endif -->
+				<!-- #ifdef MP-ALIPAY -->
+				<newsPage class="page-item" :nid="page.newsid" :ref="'page' + index"></newsPage>
+				<!-- #endif -->
 			</swiper-item>
 		</swiper>
 	</view>
 </template>
 
 <script>
-	import newsPage from '../news/news.nvue';
+	import newsPage from './news-page.nvue';
 
 	// 缓存每页最多
 	const MAX_CACHE_DATA = 100;
 	// 缓存页签数量
 	const MAX_CACHE_PAGE = 3;
-	const TAB_PRELOAD_OFFSET = 5;
+	const TAB_PRELOAD_OFFSET = 1;
 
 	export default {
 		components: {
@@ -62,10 +68,31 @@
 			}
 		},
 		onReady() {
+			// #ifndef MP-ALIPAY
 			this.pageList = this.$refs.page;
+			// #endif
+			// #ifdef MP-ALIPAY
+			for (var i = 0; i < this.tabList.length; i++) {
+				this.pageList.push(this.$refs['page' + i][0]);
+			}
+			// #endif
+
 			this.pageList[0].loadData();
 		},
 		methods: {
+			ontabtap(e) {
+				let index = e.target.dataset.current || e.currentTarget.dataset.current;
+				console.log(index);
+				this.switchTab(index);
+			},
+			onswiperchange(e) {
+				// 注意：百度小程序会触发2次
+
+				// #ifndef APP-PLUS || MP-WEIXIN
+				let index = e.target.current || e.detail.current;
+				this.switchTab(index);
+				// #endif
+			},
 			onswiperscroll(e) {
 				var offsetX = e.detail.dx;
 				var preloadIndex = this.tabIndex;
@@ -78,21 +105,15 @@
 					return;
 				}
 				if (this.pageList[preloadIndex].dataList.length === 0) {
-					// TODO
-					if (this.preloading) {
-						return;
-					}
 					this.pageList[preloadIndex].loadData();
 				}
 			},
-			ontabtap(e) {
-				let index = e.target.dataset.current || e.currentTarget.dataset.current;
+			animationfinish(e) {
+				console.log("animationfinish", e);
+				// #ifdef APP-PLUS || MP-WEIXIN
+				let index = e.detail.current;
 				this.switchTab(index);
-			},
-			ontabchange(e) {
-				// 注意：百度小程序会触发2次
-				let index = e.target.current || e.detail.current;
-				this.switchTab(index);
+				// #endif
 			},
 			switchTab(index) {
 				if (this.pageList[index].dataList.length === 0) {
