@@ -62,7 +62,6 @@
 				}],
 				tabIndex: 0,
 				cacheTab: [],
-				pageList: [],
 				scrollInto: "",
 				navigateFlag: false
 			}
@@ -72,6 +71,7 @@
 			this.pageList = this.$refs.page;
 			// #endif
 			// #ifdef MP-ALIPAY
+			this.pageList = [];
 			for (var i = 0; i < this.tabList.length; i++) {
 				this.pageList.push(this.$refs['page' + i][0]);
 			}
@@ -82,7 +82,6 @@
 		methods: {
 			ontabtap(e) {
 				let index = e.target.dataset.current || e.currentTarget.dataset.current;
-				console.log(index);
 				this.switchTab(index);
 			},
 			onswiperchange(e) {

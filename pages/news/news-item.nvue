@@ -41,6 +41,7 @@
 				this.$emit('click');
 			},
 			close(e) {
+				e.stopPropagation();
 				this.$emit('close');
 			}
 		}
