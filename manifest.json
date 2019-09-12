@@ -1,68 +1,71 @@
 {
-    "name" : "新闻资讯",
-    "appid" : "",
-    "description" : "基于uni-app开发的新闻/资讯类App模板",
-    "versionName" : "1.0.5",
-    "versionCode" : 105,
-    "transformPx" : false,
-    "uniStatistics" : {
-        "enable" : true
-    },
-    "app-plus" : {
-        "usingComponents" : true,
-        "nvueCompiler" : "uni-app",
-        "renderer" : "native",
-        /* 5+App特有相关 */
-        "modules" : {},
-        /* 模块配置 */
-        "distribute" : {
-            /* 应用发布信息 */
-            "android" : {
-                /* android打包配置 */
-                "permissions" : [
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ],
-                "abiFilters" : [ "armeabi-v7a" ]
-            },
-            "ios" : {},
-            /* ios打包配置 */
-            "sdkConfigs" : {}
-        }
-    },
-    /* SDK配置 */
-    "quickapp" : {},
-    /* 快应用特有相关 */
-    "mp-weixin" : {
-        /* 小程序特有相关 */
-        "appid" : "",
-        "setting" : {
-            "urlCheck" : false
-        },
-        "usingComponents" : true
-    },
-    "mp-alipay" : {
-        "usingComponents" : true
-    },
-    "mp-baidu" : {
-        "usingComponents" : true
-    },
-    "mp-toutiao" : {
-        "usingComponents" : true
-    },
-    "h5" : {
-        "router" : {
-            "base" : ""
-        },
-        "template" : "h5.template.html",
-        "optimization" : {
-            "treeShaking" : {
-                "enable" : true
-            }
-        }
-    }
+	"name": "新闻资讯",
+	"appid": "",
+	"description": "基于uni-app开发的新闻/资讯类App模板",
+	"versionName": "1.0.5",
+	"versionCode": 105,
+	"transformPx": false,
+	"uniStatistics": {
+		"enable": true
+	},
+	"app-plus": {
+		"usingComponents": true,
+		"nvueCompiler": "uni-app",
+		"renderer": "native",
+		"launchwebview": {
+			"render": "onscreen"
+		},
+		/* 5+App特有相关 */
+		"modules": {},
+		/* 模块配置 */
+		"distribute": {
+			/* 应用发布信息 */
+			"android": {
+				/* android打包配置 */
+				"permissions": [
+					"<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+					"<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+				],
+				"abiFilters": ["armeabi-v7a"]
+			},
+			"ios": {},
+			/* ios打包配置 */
+			"sdkConfigs": {}
+		}
+	},
+	/* SDK配置 */
+	"quickapp": {},
+	/* 快应用特有相关 */
+	"mp-weixin": {
+		/* 小程序特有相关 */
+		"appid": "",
+		"setting": {
+			"urlCheck": false
+		},
+		"usingComponents": true
+	},
+	"mp-alipay": {
+		"usingComponents": true
+	},
+	"mp-baidu": {
+		"usingComponents": true
+	},
+	"mp-toutiao": {
+		"usingComponents": true
+	},
+	"h5": {
+		"router": {
+			"base": ""
+		},
+		"template": "h5.template.html",
+		"optimization": {
+			"treeShaking": {
+				"enable": true
+			}
+		}
+	}
 }
