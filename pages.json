@@ -1,6 +1,6 @@
 {
 	"pages": [{
-			"path": "pages/list/list",
+			"path": "pages/news/index",
 			"style": {}
 		},
 		{

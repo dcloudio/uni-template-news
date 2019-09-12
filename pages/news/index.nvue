@@ -108,7 +108,6 @@
 				}
 			},
 			animationfinish(e) {
-				console.log("animationfinish", e);
 				// #ifdef APP-PLUS || MP-WEIXIN
 				let index = e.detail.current;
 				this.switchTab(index);
