@@ -91,7 +91,7 @@
 					success: (result) => {
 						const data = result.data;
 						this.isNoData = (data.length <= 0);
-						this.requestParams.minId = data[data.length - 1].newsid;
+						this.requestParams.minId = data[data.length - 1].id;
 
 						const data_list = data.map((news) => {
 							return {

@@ -17,7 +17,7 @@
 				<text class="info-text">{{data.comment_count}}条评论</text>
 				<text class="info-text">{{data.datetime}}</text>
 			</view>
-			<view class="max-close-view" @click.stop="close">
+			<view class="close-view" @click.stop="close">
 				<view class="close-l close-h"></view>
 				<view class="close-l close-v"></view>
 			</view>
@@ -163,7 +163,7 @@
 		justify-content: space-between;
 	}
 
-	.max-close-view {
+	.close-view {
 		position: relative;
 		align-items: center;
 		flex-direction: row;
