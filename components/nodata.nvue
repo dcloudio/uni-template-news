@@ -34,8 +34,6 @@
 			uni.onNetworkStatusChange((res) => {
 				this.isConnected = res.isConnected;
 				this.networkType = res.networkType;
-				console.log(this.isConnected);
-				console.log(this.networkType);
 			});
 			uni.getNetworkType({
 				success: (res) => {
