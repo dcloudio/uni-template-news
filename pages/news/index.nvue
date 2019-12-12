@@ -88,7 +88,6 @@
 			this.tabbarWidth = 0;
 			this.tabListSize = {};
 			this._touchTabIndex = 0;
-			this.isIos = uni.getSystemInfoSync().platform.toLowerCase() === 'ios';
 
 			// #ifndef MP-ALIPAY
 			this.pageList = this.$refs.page;
@@ -164,7 +163,6 @@
 				this.updateIndicator(this.tabListSize[index].left, this.tabListSize[index].width);
 				// #endif
 			},
-			doTabAnimation() {},
 			getTabbarItemsSize() {
 				// #ifdef APP-NVUE
 				dom.getComponentRect(this.$refs.tabbar1, res => {

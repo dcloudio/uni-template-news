@@ -5,7 +5,13 @@
 		},
 		{
 			"path": "pages/detail/detail",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
 		}
 	],
 	"globalStyle": {

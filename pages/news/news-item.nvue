@@ -3,9 +3,9 @@
         <view class="view" :style="{flexDirection: (newsItem.article_type === 1 || newsItem.article_type === 2)?(newsItem.article_type === 2 ?'row':'row-reverse'):'column' }">
             <text class="media-title" :class="{'media-title2': newsItem.article_type === 1 || newsItem.article_type === 2}">{{newsItem.title}}</text>
             <view v-if="newsItem.image_list || newsItem.image_url" class="image-section flex-row" :class="{'image-section-right': newsItem.article_type === 2, 'image-section-left': newsItem.article_type === 1}">
-                <image class="image-list1" :class="{'image-list2': newsItem.article_type === 1 || newsItem.article_type === 2}"
+                <image :fade-show="false" class="image-list1" :class="{'image-list2': newsItem.article_type === 1 || newsItem.article_type === 2}"
                     v-if="newsItem.image_url" :src="newsItem.image_url"></image>
-                <image class="image-list3" v-if="newsItem.image_list" :src="source.url" v-for="(source, i) in newsItem.image_list"
+                <image :fade-show="false" class="image-list3" v-if="newsItem.image_list" :src="source.url" v-for="(source, i) in newsItem.image_list"
                     :key="i" />
             </view>
         </view>

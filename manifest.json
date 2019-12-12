@@ -2,8 +2,8 @@
     "name" : "新闻资讯",
     "appid" : "",
     "description" : "基于uni-app开发的新闻/资讯类App模板",
-    "versionName" : "1.1.0",
-    "versionCode" : 110,
+    "versionName" : "2.4.3",
+    "versionCode" : 112,
     "transformPx" : false,
     "uniStatistics" : {
         "enable" : true
@@ -27,9 +27,14 @@
                     "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
+                "permissionPhoneState" : {
+                    "request" : "none"
+                },
                 "abiFilters" : [ "armeabi-v7a" ]
             },
-            "ios" : {},
+            "ios" : {
+                "idfa" : false
+            },
             /* ios打包配置 */
             "sdkConfigs" : {}
         }
