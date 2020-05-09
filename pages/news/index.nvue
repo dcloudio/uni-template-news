@@ -100,7 +100,7 @@
 			// #endif
 			this.switchTab(this.tabIndex);
 
-			this.getTabbarItemsSize();
+			this.selectorQuery();
 		},
 		methods: {
 			ontabtap(e) {
@@ -163,7 +163,7 @@
 				this.updateIndicator(this.tabListSize[index].left, this.tabListSize[index].width);
 				// #endif
 			},
-			getTabbarItemsSize() {
+			selectorQuery() {
 				// #ifdef APP-NVUE
 				dom.getComponentRect(this.$refs.tabbar1, res => {
 					this.tabbarWidth = res.size.width;
@@ -171,9 +171,21 @@
 				dom.getComponentRect(this.$refs['swiper1'], res => {
 					this.swiperWidth = res.size.width;
 				});
-				for (var i = 0; i < this.tabList.length; i++) {
-					this.getElementSize(dom, this.$refs['tabitem' + i][0], i);
-				}
+				// for (var i = 0; i < this.tabList.length; i++) {
+				// 	this.getElementSize(dom, this.$refs['tabitem' + i][0], i);
+				// }
+        // 因 nvue 暂不支持 class 查询
+        var queryTabSize = uni.createSelectorQuery().in(this);
+        for (var i = 0; i < this.tabList.length; i++) {
+          queryTabSize.select('#' + this.tabList[i].id).boundingClientRect();
+        }
+        queryTabSize.exec(rects => {
+          rects.forEach((rect) => {
+            this.tabListSize[rect.dataset.id] = rect;
+          })
+          this.updateIndicator(this.tabListSize[this.tabIndex].left, this.tabListSize[this.tabIndex].width);
+          this.switchTab(this.tabIndex);
+        });
 				// #endif
 
 				// #ifdef MP-WEIXIN || H5 || MP-QQ
@@ -187,13 +199,8 @@
 					rects.forEach((rect) => {
 						this.tabListSize[rect.dataset.id] = rect;
 					})
+          this.updateIndicator(this.tabListSize[this.tabIndex].left, this.tabListSize[this.tabIndex].width);
 				}).exec();
-				// #endif
-
-				// #ifdef APP-NVUE || H5 || MP-WEIXIN || MP-QQ
-				setTimeout(() => {
-					this.updateIndicator(this.tabListSize[this.tabIndex].left, this.tabListSize[this.tabIndex].width);
-				}, 100)
 				// #endif
 			},
 			getElementSize(dom, ref, id) {
@@ -293,12 +300,13 @@
 
 	/* #ifndef APP-NVUE */
 	.tab-bar ::-webkit-scrollbar {
-	    display: none;  
-	    width: 0 !important;  
-	    height: 0 !important;  
-	    -webkit-appearance: none;  
-	    background: transparent;  
+		display: none;
+		width: 0 !important;
+		height: 0 !important;
+		-webkit-appearance: none;
+		background: transparent;
 	}
+
 	/* #endif */
 
 	.scroll-view-indicator {
