@@ -1,193 +1,192 @@
 <template>
-    <view class="media-item view" v-if="newsItem.title" @click="click">
-        <view class="view" :style="{flexDirection: (newsItem.article_type === 1 || newsItem.article_type === 2)?(newsItem.article_type === 2 ?'row':'row-reverse'):'column' }">
-            <text class="media-title" :class="{'media-title2': newsItem.article_type === 1 || newsItem.article_type === 2}">{{newsItem.title}}</text>
-            <view v-if="newsItem.image_list || newsItem.image_url" class="image-section flex-row" :class="{'image-section-right': newsItem.article_type === 2, 'image-section-left': newsItem.article_type === 1}">
-                <image :fade-show="false" class="image-list1" :class="{'image-list2': newsItem.article_type === 1 || newsItem.article_type === 2}"
-                    v-if="newsItem.image_url" :src="newsItem.image_url"></image>
-                <image :fade-show="false" class="image-list3" v-if="newsItem.image_list" :src="source.url" v-for="(source, i) in newsItem.image_list"
-                    :key="i" />
-            </view>
-        </view>
-        <view class="media-foot flex-row">
-            <view class="media-info flex-row">
-                <text class="info-text">{{newsItem.source}}</text>
-                <text class="info-text">{{newsItem.comment_count}}条评论</text>
-                <text class="info-text">{{newsItem.datetime}}</text>
-            </view>
-            <view class="close-view" @click.stop="close">
-                <view class="close-l close-h"></view>
-                <view class="close-l close-v"></view>
-            </view>
-        </view>
-        <view class="media-item-line" style="position: absolute;"></view>
+  <view class="media-item view" v-if="newsItem.title" @click="click">
+    <view class="view" :style="{flexDirection: (newsItem.article_type === 1 || newsItem.article_type === 2)?(newsItem.article_type === 2 ?'row':'row-reverse'):'column' }">
+      <text class="media-title" :class="{'media-title2': newsItem.article_type === 1 || newsItem.article_type === 2}">{{newsItem.title}}</text>
+      <view v-if="newsItem.image_list || newsItem.image_url" class="image-section flex-row" :class="{'image-section-right': newsItem.article_type === 2, 'image-section-left': newsItem.article_type === 1}">
+        <image :fade-show="false" class="image-list1" :class="{'image-list2': newsItem.article_type === 1 || newsItem.article_type === 2}"
+          v-if="newsItem.image_url" :src="newsItem.image_url"></image>
+        <image :fade-show="false" class="image-list3" v-if="newsItem.image_list" :src="source.url" v-for="(source, i) in newsItem.image_list"
+          :key="i" />
+      </view>
     </view>
+    <view class="media-foot flex-row">
+      <view class="media-info flex-row">
+        <text class="info-text">{{newsItem.source}}</text>
+        <text class="info-text">{{newsItem.comment_count}}条评论</text>
+        <text class="info-text">{{newsItem.datetime}}</text>
+      </view>
+      <view class="close-view" @click.stop="close">
+        <view class="close-l close-h"></view>
+        <view class="close-l close-v"></view>
+      </view>
+    </view>
+    <view class="media-item-line" style="position: absolute;"></view>
+  </view>
 </template>
 
 <script>
-    export default {
-        props: {
-            newsItem: {
-                type: Object,
-                default: function(e) {
-                    return {}
-                }
-            }
-        },
-        methods: {
-            click() {
-                this.$emit('click');
-            },
-            close(e) {
-                e.stopPropagation();
-                this.$emit('close');
-            }
+  export default {
+    props: {
+      newsItem: {
+        type: Object,
+        default: function(e) {
+          return {}
         }
+      }
+    },
+    methods: {
+      click() {
+        this.$emit('click');
+      },
+      close(e) {
+        e.stopPropagation();
+        this.$emit('close');
+      }
     }
+  }
 </script>
 
 <style scoped>
-    .view {
-        flex-direction: column;
-    }
+  .view {
+    flex-direction: column;
+  }
 
-    .flex-row {
-        flex-direction: row;
-    }
+  .flex-row {
+    flex-direction: row;
+  }
 
-    .flex-col {
-        flex-direction: column;
-    }
+  .flex-col {
+    flex-direction: column;
+  }
 
-    .list-cell {
-        padding: 0 30upx;
-    }
+  .list-cell {
+    padding: 0 15px;
+  }
 
-    .uni-list-cell-hover {
-        background-color: #eeeeee;
-    }
+  .uni-list-cell-hover {
+    background-color: #eeeeee;
+  }
 
-    .media-item {
-        position: relative;
-        flex: 1;
-        flex-direction: column;
-        padding: 20upx 30upx 21upx 30upx;
-    }
+  .media-item {
+    position: relative;
+    flex: 1;
+    flex-direction: column;
+    padding: 10px 15px 10px 15px;
+  }
 
-    .media-item-line {
-        position: absolute;
-        left: 30upx;
-        right: 30upx;
-        bottom: 0;
-        height: 1upx;
-        background-color: #ebebeb;
-    }
+  .media-item-line {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 0;
+    height: 1px;
+    background-color: #ebebeb;
+  }
 
-    .media-image-right {
-        flex-direction: row;
-    }
+  .media-image-right {
+    flex-direction: row;
+  }
 
-    .media-image-left {
-        flex-direction: row-reverse;
-    }
+  .media-image-left {
+    flex-direction: row-reverse;
+  }
 
-    .media-title {
-        flex: 1;
-    }
+  .media-title {
+    flex: 1;
+  }
 
-    .media-title {
-        lines: 3;
-        text-overflow: ellipsis;
-        font-size: 30upx;
-        color: #555555;
-    }
+  .media-title {
+    lines: 3;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    color: #555555;
+  }
 
-    .media-title2 {
-        flex: 1;
-        margin-top: 6upx;
-        line-height: 40upx;
-    }
+  .media-title2 {
+    flex: 1;
+    margin-top: 3px;
+    line-height: 20px;
+  }
 
-    .image-section {
-        margin-top: 20upx;
-        flex-direction: row;
-        justify-content: space-between;
-    }
+  .image-section {
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 
-    .image-section-right {
-        margin-top: 0upx;
-        margin-left: 10upx;
-        width: 225upx;
-        height: 146upx;
-    }
+  .image-section-right {
+    margin-top: 0;
+    margin-left: 5px;
+    width: 112px;
+    height: 73px;
+  }
 
-    .image-section-left {
-        margin-top: 0upx;
-        margin-right: 10upx;
-        width: 225upx;
-        height: 146upx;
-    }
+  .image-section-left {
+    margin-top: 0;
+    margin-right: 5px;
+    width: 112px;
+    height: 73px;
+  }
 
-    .image-list1 {
-        width: 690upx;
-        height: 481upx;
-    }
+  .image-list1 {
+    height: 240px;
+  }
 
-    .image-list2 {
-        width: 225upx;
-        height: 146upx;
-    }
+  .image-list2 {
+    width: 112px;
+    height: 73px;
+  }
 
-    .image-list3 {
-        width: 225upx;
-        height: 146upx;
-    }
+  .image-list3 {
+    width: 112px;
+    height: 73px;
+  }
 
-    .media-info {
-        flex-direction: row;
-        align-items: center;
-    }
+  .media-info {
+    flex-direction: row;
+    align-items: center;
+  }
 
-    .info-text {
-        margin-right: 20upx;
-        color: #999999;
-        font-size: 24upx;
-    }
+  .info-text {
+    margin-right: 10px;
+    color: #999999;
+    font-size: 12px;
+  }
 
-    .media-foot {
-        margin-top: 25upx;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
+  .media-foot {
+    margin-top: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-    .close-view {
-        position: relative;
-        align-items: center;
-        flex-direction: row;
-        width: 40upx;
-        height: 30upx;
-        line-height: 30upx;
-        border-width: 1upx;
-        border-style: solid;
-        border-color: #aaaaaa;
-        border-radius: 4px;
-        justify-content: center;
-        text-align: center;
-    }
+  .close-view {
+    position: relative;
+    align-items: center;
+    flex-direction: row;
+    width: 20px;
+    height: 15px;
+    line-height: 15px;
+    border-width: 1upx;
+    border-style: solid;
+    border-color: #aaaaaa;
+    border-radius: 4px;
+    justify-content: center;
+    text-align: center;
+  }
 
-    .close-l {
-        position: absolute;
-        width: 18upx;
-        height: 1upx;
-        background-color: #aaaaaa;
-    }
+  .close-l {
+    position: absolute;
+    width: 9px;
+    height: 1px;
+    background-color: #aaaaaa;
+  }
 
-    .close-h {
-        transform: rotate(45deg);
-    }
+  .close-h {
+    transform: rotate(45deg);
+  }
 
-    .close-v {
-        transform: rotate(-45deg);
-    }
+  .close-v {
+    transform: rotate(-45deg);
+  }
 </style>

@@ -6,7 +6,7 @@
     "versionCode" : 112,
     "transformPx" : false,
     "uniStatistics" : {
-        "enable" : true
+        "enable" : false
     },
     "app-plus" : {
         "usingComponents" : true,
@@ -91,7 +91,8 @@
     },
     "h5" : {
         "router" : {
-            "base" : ""
+            "base" : "./",
+            "mode" : "hash"
         },
         "template" : "h5.template.html",
         "optimization" : {

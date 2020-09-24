@@ -1,23 +1,32 @@
 {
-	"pages": [{
-			"path": "pages/news/index",
-			"style": {}
-		},
-		{
-			"path": "pages/detail/detail",
-			"style": {
-				"app-plus": {
-					"titleNView": {
-						"type": "transparent"
-					}
-				}
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "新闻资讯",
-		"navigationBarBackgroundColor": "#2F85FC",
-		"backgroundColor": "#FFFFFF"
-	}
+  "pages": [{
+      "path": "pages/news/index",
+      "style": {}
+    },
+    {
+      "path": "pages/detail/detail",
+      "style": {
+        "app-plus": {
+          "titleNView": {
+            "type": "transparent"
+          }
+        }
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "新闻资讯",
+    "navigationBarBackgroundColor": "#2F85FC",
+    "backgroundColor": "#FFFFFF"
+  },
+  "rightWindow": {
+    "path": "responsive/right-window.vue",
+    "style": {
+      "width": "calc(100vw - 450px)"
+    },
+    "matchMedia": {
+      "minWidth": 768
+    }
+  }
 }
