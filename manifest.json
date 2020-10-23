@@ -2,7 +2,7 @@
     "name" : "新闻资讯",
     "appid" : "",
     "description" : "基于uni-app开发的新闻/资讯类App模板",
-    "versionName" : "2.4.3",
+    "versionName" : "2.9.5",
     "versionCode" : 112,
     "transformPx" : false,
     "uniStatistics" : {
