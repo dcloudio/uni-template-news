@@ -12,7 +12,7 @@
     <!-- #endif -->
     <!-- QQ multipleSlots=true bug -->
     <!-- #ifndef MP-QQ -->
-    <uni-list class="listview" :enableBackToTop="true" :scroll-y="true" @scrolltolower="loadMore()">
+    <uni-list ref="list" class="listview" :enableBackToTop="true" :scroll-y="true" @scrolltolower="loadMore()">
       <uni-refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
         <div class="refresh-view">
           <image class="refresh-icon" :src="refreshIcon" :style="{width: (refreshing || pulling) ? 0: '32px'}" :class="{'refresh-icon-active': refreshFlag}"></image>
@@ -118,7 +118,6 @@
           data: this.requestParams,
           success: (result) => {
             var endTime = new Date();
-            //console.log("request time " + new Date(endTime - startTime).getTime());
             const data = result.data;
             this.isNoData = (data.length <= 0);
 
@@ -149,7 +148,6 @@
             }
           },
           fail: (err) => {
-            //console.log(err);
             if (this.dataList.length == 0) {
               this.isNoData = true;
             }
@@ -209,6 +207,7 @@
       },
       onrefresh(e) {
         this.refreshData();
+				this.$refs.list.resetLoadmore();
       },
       onpullingdown(e) {
         if (this.refreshing) {

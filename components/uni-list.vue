@@ -5,7 +5,7 @@
 	</list>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<list class="uni-list" :enableBackToTop="enableBackToTop" loadmoreoffset="15" :scroll-y="scrollY" @loadmore="loadMore">
+	<list ref="list" class="uni-list" :enableBackToTop="enableBackToTop" loadmoreoffset="15" :scroll-y="scrollY" @loadmore="loadMore">
 		<slot />
 	</list>
 	<!-- #endif -->
@@ -61,6 +61,9 @@
 		methods: {
 			loadMore(e) {
 				this.$emit("scrolltolower");
+			},
+			resetLoadmore() {
+				this.$refs.list.resetLoadmore();
 			},
 			ontouchstart(e) {
 				if (!this.canPullDown) {
