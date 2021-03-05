@@ -207,7 +207,9 @@
       },
       onrefresh(e) {
         this.refreshData();
-				this.$refs.list.resetLoadmore();
+        // #ifdef APP-NVUE
+        this.$refs.list.resetLoadmore();
+        // #endif
       },
       onpullingdown(e) {
         if (this.refreshing) {
