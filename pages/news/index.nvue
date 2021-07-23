@@ -18,12 +18,7 @@
     <swiper class="tab-box" ref="swiper1" :current="tabIndex" :duration="300" @change="onswiperchange" @transition="onswiperscroll"
       @animationfinish="animationfinish" @onAnimationEnd="animationfinish">
       <swiper-item class="swiper-item" v-for="(page, index) in tabList" :key="index">
-        <!-- #ifndef MP-ALIPAY -->
-        <newsPage class="page-item" :nid="page.newsid" ref="page"></newsPage>
-        <!-- #endif -->
-        <!-- #ifdef MP-ALIPAY -->
         <newsPage class="page-item" :nid="page.newsid" :ref="'page' + index"></newsPage>
-        <!-- #endif -->
       </swiper-item>
     </swiper>
   </view>
@@ -89,15 +84,15 @@
       this.tabListSize = {};
       this._touchTabIndex = 0;
 
-      // #ifndef MP-ALIPAY
-      this.pageList = this.$refs.page;
-      // #endif
-      // #ifdef MP-ALIPAY
       this.pageList = [];
       for (var i = 0; i < this.tabList.length; i++) {
+				// #ifdef VUE3
+				this.pageList.push(this.$refs['page' + i]);
+				// #endif
+				// #ifndef VUE3
         this.pageList.push(this.$refs['page' + i][0]);
+				// #endif
       }
-      // #endif
       this.switchTab(this.tabIndex);
 
       this.selectorQuery();

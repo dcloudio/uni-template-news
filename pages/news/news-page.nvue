@@ -182,7 +182,7 @@
           })
         } else {
           uni.navigateTo({
-            url: '/pages/detail/detail?query=' + encodeURIComponent(JSON.stringify(detail))
+            url: './detail?query=' + encodeURIComponent(JSON.stringify(detail))
           });
         }
       },

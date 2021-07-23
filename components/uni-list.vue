@@ -21,8 +21,6 @@
 	<!-- #endif -->
 </template>
 
-<script src="./uni-refresh.wxs" module="refresh" lang="wxs"></script>
-
 <script>
 	export default {
 		name: 'UniList',

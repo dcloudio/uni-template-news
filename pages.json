@@ -4,7 +4,7 @@
       "style": {}
     },
     {
-      "path": "pages/detail/detail",
+      "path": "pages/news/detail",
       "style": {
         "app-plus": {
           "titleNView": {

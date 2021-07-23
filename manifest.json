@@ -2,11 +2,14 @@
     "name" : "新闻资讯",
     "appid" : "",
     "description" : "基于uni-app开发的新闻/资讯类App模板",
-    "versionName" : "2.9.5",
-    "versionCode" : 112,
+    "versionName" : "3.1.23",
+    "versionCode" : 1,
     "transformPx" : false,
     "uniStatistics" : {
         "enable" : false
+    },
+    "compatConfig" : {
+        "MODE" : 2 // 2代表兼容Vue2模式，3代表非兼容Vue2模式
     },
     "app-plus" : {
         "usingComponents" : true,
@@ -100,5 +103,6 @@
                 "enable" : true
             }
         }
-    }
+    },
+    "vueVersion" : "2"
 }
