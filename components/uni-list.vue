@@ -2,7 +2,7 @@
 	<!-- #ifdef APP-VUE -->
 	<view class="uni-list">
 		<slot />
-	</list>
+	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<list ref="list" class="uni-list" :enableBackToTop="enableBackToTop" loadmoreoffset="15" :scroll-y="scrollY" @loadmore="loadMore">
