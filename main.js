@@ -1,8 +1,9 @@
+import App from './App.vue'
+
 const host = 'https://unidemo.dcloud.net.cn/';
 
 // #ifndef VUE3
 import Vue from 'vue'
-import App from './App'
 Vue.config.productionTip = false
 Vue.prototype.$host = host;
 App.mpType = 'app'
@@ -13,9 +14,13 @@ app.$mount()
 // #endif
 
 // #ifdef VUE3
-import { createApp } from 'vue'
-import App from './App'
-const app = createApp(App)
-app.config.globalProperties.$host = host;
-app.mount('#app')
+import {
+	createSSRApp
+} from 'vue'
+export function createApp() {
+	const app = createSSRApp(App)
+	return {
+		app
+	}
+}
 // #endif

@@ -86,12 +86,12 @@
 
       this.pageList = [];
       for (var i = 0; i < this.tabList.length; i++) {
-				// #ifdef VUE3
-				this.pageList.push(this.$refs['page' + i]);
-				// #endif
-				// #ifndef VUE3
-        this.pageList.push(this.$refs['page' + i][0]);
-				// #endif
+				let item = this.$refs['page' + i]
+				if (Array.isArray(item)) {
+					this.pageList.push(item[0])
+				} else {
+					this.pageList.push(item)
+				}
       }
       this.switchTab(this.tabIndex);
 
