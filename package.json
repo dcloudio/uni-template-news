@@ -1,0 +1,20 @@
+{
+    "id": "uni-template-news",
+    "name": "新闻资讯App模板",
+    "displayName": "新闻资讯App模板",
+    "version": "3.1.7",
+    "description": "基于uni-app开发的新闻/资讯类App模板",
+    "keywords": [
+        "模板",
+        "新闻",
+        "资讯",
+        "nvue",
+        "新闻模板"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端页面模板",
+            "uni-app前端项目模板"
+        ]
+    }
+}
