@@ -52,7 +52,6 @@
       return {
         dataList: [],
         navigateFlag: false,
-        pulling: false,
         refreshing: false,
         refreshFlag: false,
         refreshText: "",
